@@ -1,0 +1,53 @@
+.feature-section {
+  display: flex;
+  align-items: flex-start; /* Align items at the top */
+  justify-content: center;
+  padding: 20px;
+ ;
+  font-family: Arial, sans-serif;
+  color: #666;
+  gap: 20px; /* Space between feature items horizontally */
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center; /* Center icon and text horizontally within each item */
+  gap: 5px; /* Space between icon, text, and link */
+}
+
+.icon {
+  font-size: 20px;
+}
+
+.checkmark {
+  color: #2ecc71;
+}
+
+.leaf {
+  color: #2ecc71;
+}
+
+.columns {
+  color: #2ecc71;
+}
+
+
+
+.browse-link {
+  color: #6b48ff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.browse-link:hover {
+  text-decoration: underline;
+
+}
+.browse-link {
+  color: #6b48ff;
+  text-decoration: none;
+  font-size: 16px;
+  align-self: center; /* Center the link within its parent */
+  margin-top: 40px; /* Add some space above the link */
+}

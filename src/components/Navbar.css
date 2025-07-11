@@ -2,31 +2,42 @@ nav {
   background-color: #fff;
   color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Makes the navbar fixed */
+  top: 0;
+  left: 0;
+  width: 100%; /* Ensures it spans the full width */
+  z-index: 1000; /* Keeps it above other content */
 }
+
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
 }
+
 .nav-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 60px;
 }
+
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
 }
+
 .nav-menu {
   display: flex;
   gap: 15px;
   align-items: center;
 }
+
 .menu-item {
   position: relative;
 }
+
 .menu-item a {
   display: flex;
   align-items: center;
@@ -35,9 +46,11 @@ nav {
   text-decoration: none;
   font-size: 1rem;
 }
+
 .menu-item a:hover {
   background-color: #f0f0f0;
 }
+
 .dropdown {
   position: absolute;
   top: 100%;
@@ -50,23 +63,28 @@ nav {
   display: none;
   z-index: 1000;
 }
+
 .menu-item:hover .dropdown {
   display: block;
 }
+
 .dropdown a {
   color: #333;
   padding: 10px 15px;
   display: block;
 }
+
 .dropdown a:hover {
   background-color: #f0f0f0;
 }
+
 .arrow {
   width: 8px;
   height: 8px;
   margin-left: 8px;
   margin-top: 4px;
 }
+
 .sign-in-btn {
   padding: 8px 15px;
   color: #333;
@@ -75,9 +93,11 @@ nav {
   border: 1px solid #333;
   border-radius: 4px;
 }
+
 .sign-in-btn:hover {
   background-color: #f0f0f0;
 }
+
 .get-started-btn {
   padding: 8px 15px;
   color: #fff;
@@ -86,6 +106,7 @@ nav {
   font-size: 1rem;
   border-radius: 4px;
 }
+
 .get-started-btn:hover {
   background-color: #218838;
 }

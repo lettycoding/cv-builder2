@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Navbar.css';
+import { Link } from 'react-router-dom'; // Import Link
+
 
 export const menuItems = [
   {
@@ -142,8 +144,9 @@ const Navbar = () => {
               }
               return <MenuItem key={index} item={item} />;
             })}
-            <a href="/#" className="sign-in-btn">Sign in</a>
-            <a href="/#" className="get-started-btn">Get started</a>
+           <Link to="/login" className="sign-in-btn">Sign in</Link>
+            <Link to="/get-started" className="get-started-btn">Get started</Link>
+
           </div>
         </div>
       </div>
