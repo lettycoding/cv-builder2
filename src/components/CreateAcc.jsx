@@ -1,9 +1,10 @@
 
 import React from 'react';
-import './Login.css';
+import './CreateAcc.css';
 import { Flame, PiggyBank, Hand } from 'lucide-react';
 import { Link } from 'react-router-dom';
-const Login = () => {
+
+const Account = () => {
   return (
     <div className="login-container">
       <div className="login-left">
@@ -21,21 +22,23 @@ const Login = () => {
         <div className="social-buttons">
           <button className="social-btn linkedin">LinkedIn</button>
           <button className="social-btn google">Google</button>
-          <button className="social-btn facebook">Facebook</button>
+         
         </div>
         <p>or use your email</p>
         <form>
+          <input type="name" placeholder="Your Name" required />
           <input type="email" placeholder="Your Email" required />
           <input type="password" placeholder="Password" required />
-          <button type="submit" className="sign-in-btn">Sign In</button>
+          <button type="submit" className="sign-in-btn">create account</button>
         </form>
         <div className="links">
-          <a href="#">Forgot your password?</a>
-          <p>First time here? <Link to="/account">Create an account</Link></p>
+          
+          
+          <p>Already have an account? <Link to="/login">Sign in</Link></p>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Account;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 import { Link } from 'react-router-dom'; // Import Link
+import logo1 from '../assets/logo.png';
 
 
 export const menuItems = [
@@ -135,7 +136,10 @@ const Navbar = () => {
     <nav>
       <div className="nav-container">
         <div className="nav-content">
-          <div className="logo">Logo</div>
+          <div className="logo">
+
+            <img src={logo1} alt="Company Name Logo" className="logo-img" />
+          </div>
           <div className="nav-menu">
             {menuItems.map((item, index) => {
               // Skip rendering "Sign in" and "Get started" as MenuItems since they have custom styling

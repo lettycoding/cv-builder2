@@ -1,0 +1,105 @@
+.reviews-section {
+  /*background: linear-gradient(90deg, #f5e6cc, #e0c4ff);*/
+  padding: 40px 20px; /* 50px top/bottom, 20px left/right */
+  text-align: center;
+  font-family: Arial, sans-serif;
+  width: 100%; /* Ensure full width */
+}
+
+.reviews-section h1 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.reviews-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  /* Removed max-width and margin: 0 auto to allow full horizontal coverage */
+}
+
+.review-card, .summary-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  width: 250px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.star {
+  color: #ccc;
+  font-size: 1.2em;
+}
+
+.star.filled {
+  color: #00cc00;
+}
+
+.star.half {
+  color: #00cc00;
+  position: relative;
+  overflow: hidden;
+  width: 0.6em;
+}
+
+.star.half::before {
+  content: '★';
+  position: absolute;
+  color: #ccc;
+  width: 100%;
+  overflow: hidden;
+}
+
+.read-more, .read-reviews {
+  color: #4a90e2;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.days-ago {
+  color: #666;
+  font-size: 0.8em;
+  margin-bottom: 5px;
+}
+
+.review-text {
+  color: #333;
+  font-size: 0.95em;
+  margin: 5px 0;
+}
+
+.author {
+  color: #666;
+  font-size: 0.85em;
+  margin-top: 10px;
+}
+
+.summary-card {
+  width: 300px;
+  text-align: center;
+}
+
+.summary-card .rating span {
+  font-size: 1.1em;
+  color: #333;
+}
+
+.summary-card p {
+  font-size: 0.95em;
+  color: #666;
+}
+
+.summary-card .read-reviews {
+  display: block;
+  margin-top: 10px;
+}
