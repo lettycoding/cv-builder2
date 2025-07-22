@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './imageCarousel.css';
-import img1 from '../assets/img1.jpeg';
-import img2 from '../assets/img2.jpeg';
+import img1 from '../assets/anime.webp';
+import img2 from '../assets/anime1.webp';
 import img3 from '../assets/img3.jpeg';
 import img4 from '../assets/img4.jpeg';
 import img5 from '../assets/img5.jpeg';
@@ -17,7 +17,7 @@ import img14 from '../assets/img14.jpeg';
 import img15 from '../assets/img15.jpeg';
 
 const ImageCarousel = () => {
-  const images = [img1,img2,img3,img4,img5,img6,img7,img8,img9,img11,img12,img13,img14,img15];
+  const images = [img1,img2,img2];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [disableTransition, setDisableTransition] = useState(false);

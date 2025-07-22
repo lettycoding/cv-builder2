@@ -131,6 +131,22 @@ const MenuItem = ({ item }) => {
   );
 };
 
+
+const Dropdown = function(props) {
+
+  return (
+
+    <div className='dropdown'>
+      <button className='dropdownbtn'>{props.title}</button>
+      <div className='dropdowm-content'>
+        {props.items.map(function(item,index){
+          return <a href="#" key={index}>{item}</a>;
+          
+        })}
+      </div>
+    </div>
+  )
+}
 const Navbar = () => {
   return (
     <nav>

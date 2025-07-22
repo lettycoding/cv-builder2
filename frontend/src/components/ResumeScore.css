@@ -1,0 +1,131 @@
+.resume-score-container {
+  
+    
+  background: linear-gradient(#e6f0fa, #f3f4f5); /* Added background color for the entire page */
+   /* Ensures the background covers the full viewport height */
+}
+.header1 {
+    font-size: 15px;
+    color: blueviolet;
+    margin-top: 120px;
+    margin-bottom: 50px;
+
+}
+.header2 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.header22 {
+    font-size: 60px;
+    margin-bottom: 60px;
+}
+.header3 {
+    font-size: '15px';
+    margin-bottom: 10px;
+}
+.subbutton{
+    height: 50px;
+    width: 200px;
+    border-radius: 5px;
+    background-color: #2ecc71;
+    margin-top: 10px;
+    border-color: #2ecc71;
+    
+}
+
+.header31 {
+    font-size: '15px';
+    margin-bottom: 50px;
+}
+.mainbutton {
+    height: 190px;
+    width: 500px;
+    background-color: aliceblue;
+    border-radius: 8px;
+    border-color: #2ecc71;
+    border-style: dashed;
+
+}
+
+.subbutton-margin{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.buttonfont {
+    font-size: 14px;
+}
+
+.container{
+    margin-left: 70px;
+    display: left;
+}
+
+.resume-score-container {
+  padding: 20px;
+}
+
+.content-wrapper {
+  display: flex; /* Use flexbox to align content and image side by side */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px; /* Space between text/content and image */
+}
+
+.text-content {
+  flex: 1; /* Allows text content to take available space */
+}
+
+.image-wrapper {
+  flex: 0 0 auto; /* Image takes its natural size */
+}
+
+.resume-image {
+    margin-right: 150px;
+    margin-top: 250px;
+  width: 300px; /* Adjust size as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+  position: relative; /* Needed for absolute positioning of the text */
+  display: flex; /* Optional: Use flexbox to center the text */
+  justify-content: center;
+  align-items: center; /* Centers the text vertically and horizontally */
+  margin-top: 30px;
+  margin-bottom: 25px;
+}
+
+.circle-text {
+    margin-top: 20px;
+  color: #fff; /* White text for contrast */
+  font-size: 20px; /* Adjust size as needed */
+  font-weight: bold;
+}
+
+.enhancer-section {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.enhancer-image-wrapper {
+  flex: 0 0 30%;
+  padding-right: 20px;
+}
+
+.enhancer-image {
+    margin-top: 300px;
+  max-width: 100%;
+  height: auto;
+  margin-left: 95px;
+  width: 200px;
+}
+
+.enhancer-text-content {
+  flex: 1;
+}
