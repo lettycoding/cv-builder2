@@ -1,10 +1,39 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import './CreateAcc.css';
 import { Flame, PiggyBank, Hand } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Changed from useHistory
+import axios from 'axios';
 
 const Account = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); // Changed from history
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/register', formData);
+      setMessage(response.data.message);
+      // Redirect to the root (App.jsx)
+      navigate('/'); // Changed from history.push
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred during registration');
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-left">
@@ -22,18 +51,38 @@ const Account = () => {
         <div className="social-buttons">
           <button className="social-btn linkedin">LinkedIn</button>
           <button className="social-btn google">Google</button>
-         
         </div>
         <p>or use your email</p>
-        <form>
-          <input type="name" placeholder="Your Name" required />
-          <input type="email" placeholder="Your Email" required />
-          <input type="password" placeholder="Password" required />
-          <button type="submit" className="sign-in-btn">create account</button>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="sign-in-btn">Create Account</button>
         </form>
+        {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
         <div className="links">
-          
-          
           <p>Already have an account? <Link to="/login">Sign in</Link></p>
         </div>
       </div>
