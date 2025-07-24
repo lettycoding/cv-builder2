@@ -7,13 +7,15 @@ import FeatureSection from './components/FeatureSection';
 import Login from './components/Login';
 import GetStarted from './components/GetStarted';
 import UploadResume from './components/UploadResume';
-import { Share2, Rocket, Contact, CircleCheck, ArrowRight } from 'lucide-react';
+import { Share2, Rocket, Contact, CircleCheck, ArrowRight,Star } from 'lucide-react';
 import Reviews from './components/Reviews';
 import Account from './components/CreateAcc';
 import { Link } from 'react-router-dom';
 import ResumeScore from './components/ResumeScore';
 import grandientimage from './assets/gradient.svg'; // Ensure this path is correct
 import { RxFontStyle } from 'react-icons/rx';
+
+import Templates from './components/Templates';
 
 function App() {
   const backgroundStyle = {
@@ -50,6 +52,7 @@ function App() {
     margin: 0,
     color:'#2d2639',
     fontstyle:'normal',
+    marginBottom:'10px',
   
     fontFamily: 'Rubik, sans-serif', // Set font family
   };
@@ -63,23 +66,60 @@ function App() {
 
   const buttonContainerStyle = {
     display: 'flex',
-    gap: '10px',
-    marginLeft: '55px',
+    gap: '20px',
+    marginLeft: '8px',
     marginBottom: '15px',
     backgroundColor: 'transparent', // Ensure no opaque background
     fontFamily: 'Rubik, sans-serif', // Set font family
   };
 
   const buildButtonStyle = {
-    padding: '10px 20px',
+    marginTop:'25px',
+    padding: '13px 16px',
     backgroundColor: 'rgb(27,205,164)',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
-    fontSize: '16px',
+    fontSize: '18px',
     cursor: 'pointer',
     fontFamily: 'Rubik, sans-serif', // Set font family
   };
+  const buildButtonStyle3 = {
+  marginTop: '25px',
+  padding: '13px 16px',
+  borderColor: 'rgb(56,67,71)',
+  backgroundColor: 'transparent',
+  borderRadius: '4px',
+  fontSize: '18px',
+  borderStyle: 'solid',     
+  borderWidth: '2px',       
+  cursor: 'pointer',
+  fontFamily: 'Rubik, sans-serif',
+   textDecoration: 'none',
+};
+
+const starContainerStyle = {
+  display: 'flex',            // Flexbox for row layout
+  flexDirection: 'row',       // Align stars in a row (horizontal)
+  alignItems: 'center',       // Vertically center the stars inside the div
+};
+
+const singleStarWrapperStyle = {
+  backgroundColor: 'rgb(27,205,164)',   // Green background for the square
+  padding: '4px',            // Padding for square size
+  borderRadius: '8px',        // Rounded corners
+  margin: '5px',              // Space between stars
+  display: 'flex',
+  alignItems: 'center',       // Center the star vertically
+  justifyContent: 'center',   // Center the star horizontally
+};
+
+// Style for the star icon to make the interior white
+const starIconStyle = {
+  color: 'white',
+  size:'2px',
+};
+
 
   const headingStyle2 = {
     display: 'flex',
@@ -113,7 +153,8 @@ function App() {
   const starStyle = {
     color: 'rgb(87,205,164)',
     fontSize: '18px',
-    fontFamily: 'Rubik, sans-serif', // Set font family
+    fontFamily: 'Rubik, sans-serif',
+  
   };
 
   return (
@@ -126,28 +167,59 @@ function App() {
             element={
               <main style={backgroundStyle}>
                 <div style={headingContainerStyle}>
-                  <div style={{ margin: '32px', border: '32px' }}>
-                    <h1 style={headingStyle}>
+                  <div>
+                    <div style={{font:'58px rubik',margin:'32px 0px',color:'2D3639'}}>
+                      <h1 style={headingStyle}>
                       Enhancv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
                     </h1>
                     <h1 style={headingStyle}>
                        helps you get hired at top
                     </h1>
                     <h1 style={headingStyle}> companies</h1>
+                    </div>
+                    <div style={buttonContainerStyle}>
+                     <button style={buildButtonStyle}>Build Your Resume</button>
+                     <Link to="/resumescore" style={buildButtonStyle3}>
+                     <span style={{color:'rgb(56,67,71)'}}>Get Your Resume Score</span>
+                     </Link>
+                    </div>
+                    <div style={reviewStyle}>
+                      <span>Excellent</span>
+                      <span >
+                                     <div style={starContainerStyle}>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} /> {/* Lucid icon with white interior */}
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div
+    style={{
+      ...singleStarWrapperStyle,
+      background: 'linear-gradient(to right, rgb(27,205,164) 50%, #fff 50%)'
+    }}
+  >
+    <Star size={20} fill='#fff' style={starIconStyle} />
+  </div>
+                          </div>
+                      </span>
+                      <span>4,662 Reviews</span>
+                    </div>
+                    <div>
+                      <h3></h3>
+                    </div>
+
                   </div>
-                  <ImageCarousel />
+                     <div><ImageCarousel /></div>
+                  
                 </div>
-                <div style={buttonContainerStyle}>
-                  <button style={buildButtonStyle}>Build Your Resume</button>
-                  <Link to="/resumescore" style={buildButtonStyle}>
-                    Get Your Resume Score
-                  </Link>
-                </div>
-                <div style={reviewStyle}>
-                  <span>Excellent</span>
-                  <span style={starStyle}>★★★★☆</span>
-                  <span>4,662 Reviews</span>
-                </div>
+                
                 <Slider />
                 <FeatureSection />
                 <div style={headingContainerStyle}>
@@ -380,6 +452,7 @@ function App() {
           <Route path="/upload-resume" element={<UploadResume />} />
           <Route path="/account" element={<Account />} />
           <Route path="/resumescore" element={<ResumeScore />} />
+          <Route path="/templates" element={<Templates />} />
         </Routes>
       </div>
     </Router>

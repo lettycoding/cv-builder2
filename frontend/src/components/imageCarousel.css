@@ -13,6 +13,7 @@
   transform-style: preserve-3d;
   transition: transform 1s;
   margin-left: 100px;
+  margin-top: 70px;
 }
 
 .carousel.no-transition {

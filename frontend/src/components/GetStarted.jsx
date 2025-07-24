@@ -9,6 +9,10 @@ const GetStarted = () => {
     navigate('/upload-resume');
   };
 
+  const handleNoClick = () => {
+    navigate('/templates');
+  };
+
   return (
     <div className="get-started-container">
       <div className="progress-bar">
@@ -23,7 +27,7 @@ const GetStarted = () => {
         <h2>Do you have an existing resume to use as a starting point?</h2>
         <div className="buttons">
           <button className="yes-btn" onClick={handleYesClick}>Yes</button>
-          <button className="no-btn">No</button>
+          <button className="no-btn" onClick={handleNoClick}>No</button>
         </div>
       </div>
     </div>
