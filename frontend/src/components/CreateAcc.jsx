@@ -27,8 +27,8 @@ const Account = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/register', formData);
       setMessage(response.data.message);
-      // Redirect to the root (App.jsx)
-      navigate('/'); // Changed from history.push
+      // Redirect to Connexion.jsx page
+      navigate('/connexion'); // <-- change here
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during registration');
     }

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import html2pdf from 'html2pdf.js';
 
 const initialData = {
   name: 'Your Name',
@@ -408,6 +409,20 @@ const Templates = () => {
   const [photo, setPhoto] = useState(null);
   const componentRef = useRef();
 
+  // --- PDF Download Handler ---
+  const handleDownloadPDF = () => {
+    if (componentRef.current) {
+      const opt = {
+        margin: 0,
+        filename: `${resume.name || "resume"}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'pt', format: [700, 1000], orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(componentRef.current).save();
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -541,7 +556,7 @@ const Templates = () => {
           padding: 30,
           textAlign: 'center'
         }}>
-          <h1 style={{ fontSize: '2.5em', marginBottom: 10, fontWeight: 'bold' }}>🚀 Dynamic Resume Builder</h1>
+          <h1 style={{ fontSize: '2.5em', marginBottom: 10, fontWeight: 'bold' }}> Dynamic Resume Builder</h1>
           <p style={{ fontSize: '1.1em', opacity: 0.9 }}>Create professional resumes with real-time preview and instant download</p>
         </div>
 
@@ -635,7 +650,7 @@ const Templates = () => {
                   >
                     ← Back to Templates
                   </button>
-                  <button onClick={handlePrint} style={buttonStyle}>
+                  <button onClick={handleDownloadPDF} style={buttonStyle}>
                     📄 Download PDF
                   </button>
                 </div>
@@ -840,7 +855,7 @@ const Templates = () => {
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-                <div ref={componentRef} style={{ transform: 'scale(0.7)', transformOrigin: 'top center' }}>
+                <div ref={componentRef}>
                   {template === 'aleena' && <AleenaPreview resume={resume} photo={photo} />}
                   {template === 'richard' && <RichardPreview resume={resume} photo={photo} />}
                   {template === 'ella' && <EllaPreview resume={resume} photo={photo} />}
