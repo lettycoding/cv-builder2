@@ -16,7 +16,9 @@ import grandientimage from './assets/gradient.svg'; // Ensure this path is corre
 import { RxFontStyle } from 'react-icons/rx';
 
 import Templates from './components/Templates';
-
+import CVSectionOrganizer from './components/reorganiser';
+import ResumeBuilderLanding from './components/Connexion';
+import CVSectionOrganizer1 from './components/reorganiser1';
 
 function App() {
   const backgroundStyle = {
@@ -165,7 +167,7 @@ function App() {
                   <div>
                     <div style={{font:'58px rubik',margin:'32px 0px',color:'2D3639'}}>
                       <h1 style={headingStyle}>
-                        Enhancv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
+                        ε-cv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
                       </h1>
                       <h1 style={headingStyle}>
                         helps you get hired at top
@@ -220,7 +222,7 @@ function App() {
                     <h2 style={headingStyle3}> applicant tracking systems</h2>
                     <h2 style={headingStyle3}> (ATS)</h2>
                     <h3 style={headingStyle2}>
-                      Enhancv resumes and cover letters are vigorously tested against
+                      ε-cv resumes and cover letters are vigorously tested against
                     </h3>
                     <h3> major ATS systems to ensure complete parsability</h3>
                     <div style={buttonContainerStyle}>
@@ -370,10 +372,10 @@ function App() {
                 </div>
                 <div style={{ margin: '50px', display: 'left' }}>
                   <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Resume tailoring based on the job you’re applying for
+                    Resume tailoring based on the job you're applying for
                   </h1>
                   <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Quickly ensure that your resume covers key skills and experiences by pasting the job ad you’re applying for
+                    Quickly ensure that your resume covers key skills and experiences by pasting the job ad you're applying for
                   </h3>
                   <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
                     <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Skills and experience section analysis
@@ -412,7 +414,7 @@ function App() {
                   }}
                 >
                   <h1 style={{ fontSize: '30px', textAlign: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    The resume builder that’s right for your job and experience
+                    The resume builder that's right for your job and experience
                   </h1>
                 </div>
                 <div>
@@ -446,6 +448,10 @@ function App() {
           <Route path="/resumescore" element={<ResumeScore />} />
           <Route path="/templates" element={<Templates />} />
           
+          <Route path="/connexion" element={<ResumeBuilderLanding />} />
+          {/* Added new route for reorganiser */}
+          <Route path="/reorganiser" element={<CVSectionOrganizer />} />
+          <Route path="/reorganiser1" element={<CVSectionOrganizer1 />} />
           
         </Routes>
       </div>

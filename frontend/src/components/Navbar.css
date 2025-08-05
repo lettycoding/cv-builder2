@@ -7,7 +7,6 @@ nav {
   left: 0;
   width: 100%; /* Ensures it spans the full width */
   z-index: 1000; /* Keeps it above other content */
-  
 }
 
 .nav-container {
@@ -78,11 +77,11 @@ nav {
 .dropdown a:hover {
   background-color: #f0f0f0;
 }
-.logo-img{
+
+.logo-img {
   height: 70px;
   justify-content: center;
   margin-top: 15px;
-
 }
 
 .arrow {
@@ -92,28 +91,33 @@ nav {
   margin-top: 4px;
 }
 
+/* CORRECTED SIGN IN BUTTON */
 .sign-in-btn {
   padding: 8px 15px;
-  color: #333;
-  text-decoration: none;
+  color: #fff !important; /* Changed to white */
+  text-decoration: none !important;
   font-size: 1rem;
-  border: 1px solid #333;
+  border: 1px solid rgb(27,205,164); /* Changed border to match background */
   border-radius: 4px;
+  background-color: rgb(27,205,164) !important;
+  display: inline-block;
 }
 
+/* Fixed hover state - keep the same background color */
 .sign-in-btn:hover {
-  background-color: #f0f0f0;
+  background-color: rgb(20,180,150) !important; /* Slightly darker shade for hover */
+  color: #fff !important; /* Keep white text on hover */
 }
 
 .get-started-btn {
   padding: 8px 15px;
   color: #fff;
-  background-color: #28a745;
+  background-color: rgb(27,205,164);
   text-decoration: none;
   font-size: 1rem;
   border-radius: 4px;
 }
 
 .get-started-btn:hover {
-  background-color: #218838;
+  background-color: rgb(20,180,150); /* Slightly darker shade for hover */
 }

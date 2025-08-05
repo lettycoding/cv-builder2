@@ -37,7 +37,7 @@ const Account = () => {
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="logo">Enhancv</div>
+        <div className="logo">ε-cv</div>
         <h2>Create a resume you are proud of</h2>
         <ul className="features-list">
           <li><PiggyBank className="icon" /> Save time with hassle-free templates</li>

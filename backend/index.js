@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import sequelize from './config/database.js';
 import userRoutes from './Routes/userroute.js';
+import linkedinroutes from './Routes/linkedin.router.js';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api', userRoutes);
+app.use('/api/linkedin', linkedinroutes)
 
 const PORT = process.env.PORT || 5000;
 

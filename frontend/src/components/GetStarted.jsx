@@ -10,7 +10,7 @@ const GetStarted = () => {
   };
 
   const handleNoClick = () => {
-    navigate('/templates');
+    navigate('/cv-templates');
   };
 
   return (

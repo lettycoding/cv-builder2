@@ -42,11 +42,11 @@
 }
 
 .star.filled {
-  color: #00cc00;
+  color: rgb(27,205,164);
 }
 
 .star.half {
-  color: #00cc00;
+  color: rgb(27,205,164);
   position: relative;
   overflow: hidden;
   width: 0.6em;

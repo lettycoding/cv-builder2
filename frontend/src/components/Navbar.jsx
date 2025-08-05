@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 import { Link } from 'react-router-dom'; // Import Link
-import logo1 from '../assets/logo.png';
+import logo from '../assets/real2.png';
 
 
 export const menuItems = [
@@ -154,7 +154,7 @@ const Navbar = () => {
         <div className="nav-content">
           <div className="logo">
 
-            <img src={logo1} alt="Company Name Logo" className="logo-img" />
+            <img src={logo} alt="Company Name Logo" className="logo-img" />
           </div>
           <div className="nav-menu">
             {menuItems.map((item, index) => {

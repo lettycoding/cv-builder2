@@ -13,7 +13,7 @@ const Reviews = () => {
     },
     {
       rating: 4.5,
-      text: 'Enhancv has proven to be an outstanding and highly strategic resume-building platform that goes far beyond traditional templates. As a student transitioning from academia into the professional...',
+      text: ' ε-cv has proven to be an outstanding and highly strategic resume-building platform that goes far beyond traditional templates. As a student transitioning from academia into the professional...',
       author: '@quot;quot;',
       daysAgo: '4 days ago',
     },
