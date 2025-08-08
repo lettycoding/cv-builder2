@@ -15,7 +15,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api', userRoutes);
-app.use('/api/linkedin', linkedinroutes)
+app.use('/api/linkedin', linkedinroutes);
 
 const PORT = process.env.PORT || 5000;
 
