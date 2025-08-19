@@ -114,7 +114,7 @@ const ResumeBuilderLanding = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         if (process.env.NODE_ENV !== 'production') {
-                          console.log('Navigating to /reorganiser');
+                          console.log('Navigating to /reorganiser1');
                         }
                       }}
                     >
@@ -139,15 +139,21 @@ const ResumeBuilderLanding = () => {
                       <ArrowRight className="button-arrow" aria-hidden="true" />
                     </Link>
                   ) : (
-                    /* Third option - AI-Powered (remains as button) */
-                    <button
-                      onClick={() => handleOptionSelect(option.id)}
+                    /* Third option - AI-Powered (now navigates to reorganiser2) */
+                    <Link
+                      to="/reorganiser2"
                       className={`option-button gradient-${option.color}`}
-                      aria-label={`Select ${option.title}`}
+                      aria-label="Generate resume with AI"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (process.env.NODE_ENV !== 'production') {
+                          console.log('Navigating to /reorganiser2');
+                        }
+                      }}
                     >
                       {option.buttonText}
                       <ArrowRight className="button-arrow" aria-hidden="true" />
-                    </button>
+                    </Link>
                   )}
                 </div>
               </article>
