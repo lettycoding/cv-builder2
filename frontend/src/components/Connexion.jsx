@@ -58,10 +58,7 @@ const ResumeBuilderLanding = () => {
 
       <div className="main-content">
         <header className={`header ${isVisible ? 'visible' : ''}`}>
-          <div className="badge">
-            <Zap className="badge-icon" aria-hidden="true" />
-            <span className="badge-text">Professional Resume Builder</span>
-          </div>
+          
           
           <h1 className="main-title">
             Create Your

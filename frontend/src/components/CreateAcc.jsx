@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './CreateAcc.css';
 import { Flame, PiggyBank, Hand } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom'; // Changed from useHistory
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Loader from './Loader'; // Import the Loader component
 
 const Account = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,8 @@ const Account = () => {
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Changed from history
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,21 +25,27 @@ const Account = () => {
     e.preventDefault();
     setMessage('');
     setError('');
+    setIsLoading(true); // Show loader
 
     try {
       const response = await axios.post('http://localhost:5000/api/register', formData);
       setMessage(response.data.message);
-      // Redirect to Connexion.jsx page
-      navigate('/connexion'); // <-- change here
+      
+      // Small delay to show success message before redirect
+      setTimeout(() => {
+        navigate('/connexion');
+      }, 1000);
+      
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during registration');
+      setIsLoading(false); // Hide loader on error
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="logo">ε-cv</div>
+        <div className="logo">Îµ-cv</div>
         <h2>Create a resume you are proud of</h2>
         <ul className="features-list">
           <li><PiggyBank className="icon" /> Save time with hassle-free templates</li>
@@ -47,10 +55,10 @@ const Account = () => {
         <p>Get inspired by 1800+ Free Resume Examples and Templates</p>
       </div>
       <div className="login-right">
-        <h2>Sign in to your account</h2>
+        <h2>Create your account</h2>
         <div className="social-buttons">
-          <button className="social-btn linkedin">LinkedIn</button>
-          <button className="social-btn google">Google</button>
+          <button className="social-btn linkedin" disabled={isLoading}>LinkedIn</button>
+          <button className="social-btn google" disabled={isLoading}>Google</button>
         </div>
         <p>or use your email</p>
         <form onSubmit={handleSubmit}>
@@ -61,6 +69,7 @@ const Account = () => {
             value={formData.name}
             onChange={handleChange}
             required
+            disabled={isLoading} // Disable input during loading
           />
           <input
             type="email"
@@ -69,6 +78,7 @@ const Account = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={isLoading} // Disable input during loading
           />
           <input
             type="password"
@@ -77,9 +87,24 @@ const Account = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={isLoading} // Disable input during loading
           />
-          <button type="submit" className="sign-in-btn">Create Account</button>
+          <button 
+            type="submit" 
+            className="sign-in-btn"
+            disabled={isLoading} // Disable button during loading
+          >
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
+        
+        {/* Show loader when loading */}
+        {isLoading && (
+          <div className="loader-container">
+            <Loader />
+          </div>
+        )}
+        
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
         <div className="links">
