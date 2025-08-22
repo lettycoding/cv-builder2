@@ -3,6 +3,7 @@ import './Login.css';
 import { Flame, PiggyBank, Hand } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Loader from './Loader'; // Import the Loader component
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Login = () => {
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,22 +24,29 @@ const Login = () => {
     e.preventDefault();
     setMessage('');
     setError('');
+    setIsLoading(true); // Show loader
 
     try {
       const response = await axios.post('http://localhost:5000/api/login', formData);
       setMessage(response.data.message);
       // Store the token and redirect to Connexion.jsx
       localStorage.setItem('token', response.data.token);
-      navigate('/connexion'); // <-- Redirect to Connexion.jsx
+      
+      // Small delay to show success message before redirect
+      setTimeout(() => {
+        navigate('/connexion');
+      }, 1000);
+      
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during login');
+      setIsLoading(false); // Hide loader on error
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="logo">ε-cv</div>
+        <div className="logo">Îµ-cv</div>
         <h2>Create a resume you are proud of</h2>
         <ul className="features-list">
           <li><PiggyBank className="icon" /> Save time with hassle-free templates</li>
@@ -62,6 +71,7 @@ const Login = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={isLoading} // Disable input during loading
           />
           <input
             type="password"
@@ -70,9 +80,24 @@ const Login = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={isLoading} // Disable input during loading
           />
-          <button type="submit" className="sign-in-btn">Sign In</button>
+          <button 
+            type="submit" 
+            className="sign-in-btn"
+            disabled={isLoading} // Disable button during loading
+          >
+            {isLoading ? 'Signing In...' : 'Sign In'}
+          </button>
         </form>
+        
+        {/* Show loader when loading */}
+        {isLoading && (
+          <div className="loader-container">
+            <Loader />
+          </div>
+        )}
+        
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
         <div className="links">

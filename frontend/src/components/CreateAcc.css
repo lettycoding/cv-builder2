@@ -92,7 +92,7 @@
   color: #fff;
 }
 
-.linkedin:hover {
+.linkedin:hover:not(:disabled) {
   background-color: #005f91;
 }
 
@@ -101,8 +101,13 @@
   color: #fff;
 }
 
-.google:hover {
+.google:hover:not(:disabled) {
   background-color: #3267d6;
+}
+
+.social-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 form {
@@ -126,6 +131,12 @@ input:focus {
   outline: none;
 }
 
+input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .sign-in-btn {
   padding: 10px;
   background-color: #28a745;
@@ -137,8 +148,23 @@ input:focus {
   transition: background-color 0.3s ease;
 }
 
-.sign-in-btn:hover {
+.sign-in-btn:hover:not(:disabled) {
   background-color: #218838;
+}
+
+.sign-in-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loader container styles */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+  padding: 5px;
 }
 
 .success-message {

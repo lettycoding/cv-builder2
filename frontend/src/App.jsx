@@ -19,6 +19,7 @@ import Templates from './components/Templates';
 import CVSectionOrganizer from './components/reorganiser';
 import ResumeBuilderLanding from './components/Connexion';
 import CVSectionOrganizer1 from './components/reorganiser1';
+import CVSectionOrganizer2 from './components/reorganiser2';
 
 function App() {
   const backgroundStyle = {
@@ -452,6 +453,8 @@ function App() {
           {/* Added new route for reorganiser */}
           <Route path="/reorganiser" element={<CVSectionOrganizer />} />
           <Route path="/reorganiser1" element={<CVSectionOrganizer1 />} />
+          <Route path="/reorganiser2" element={<CVSectionOrganizer2 />} />
+          
           
         </Routes>
       </div>

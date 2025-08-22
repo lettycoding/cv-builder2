@@ -135,6 +135,12 @@ input:focus {
   outline: none;
 }
 
+input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .sign-in-btn {
   padding: 10px;
   background-color: #28a745;
@@ -146,8 +152,23 @@ input:focus {
   transition: background-color 0.3s ease;
 }
 
-.sign-in-btn:hover {
+.sign-in-btn:hover:not(:disabled) {
   background-color: #218838;
+}
+
+.sign-in-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loader container styles */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  padding: 10px;
 }
 
 .success-message {

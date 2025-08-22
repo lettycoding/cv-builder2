@@ -1,7 +1,6 @@
 import React, { useState, useCallback, memo, useRef } from 'react';
-import { X, GripVertical, Mail, Phone, MapPin, Download, Printer, Linkedin, Upload } from 'lucide-react';
+import { X, GripVertical, Mail, Phone, MapPin, Download, Printer } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
-import './reorganiser1.css';
 
 const EditableInput = memo(({ value, onChange, placeholder, multiline = false, className }) => {
   const handleChange = useCallback((e) => {
@@ -31,176 +30,6 @@ const EditableInput = memo(({ value, onChange, placeholder, multiline = false, c
 
 EditableInput.displayName = 'EditableInput';
 
-const LinkedInImportModal = ({ isOpen, onClose, onImport }) => {
-  const [linkedinUrl, setLinkedinUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const parseLinkedInProfile = async (url) => {
-    setIsLoading(true);
-    setError('');
-    
-    // Simulate a network request to a LinkedIn API
-    try {
-      // In a real application, you'd call a backend service here
-      // that handles the LinkedIn API integration.
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock data to simulate a successful API response
-      const mockProfile = {
-        name: 'John Doe',
-        title: 'Senior Full Stack Developer',
-        email: 'john.doe@email.com',
-        phone: '+1 (555) 123-4567',
-        city: 'New York, USA',
-        profile: 'Passionate Full Stack Developer with over 5 years of experience in building modern web applications. Expertise in React, Node.js, and cloud technologies.',
-        experiences: [
-          {
-            id: `exp-${Date.now()}`,
-            jobTitle: 'Senior Full Stack Developer',
-            company: 'TechCorp Solutions',
-            dates: 'Jan 2022 - Present',
-            responsibilities: [
-              'Developed React applications with TypeScript',
-              'Architected and deployed Node.js APIs',
-              'Mentored a team of 3 junior developers'
-            ]
-          },
-          {
-            id: `exp-${Date.now() + 1}`,
-            jobTitle: 'Web Developer',
-            company: 'StartupTech',
-            dates: 'Mar 2019 - Dec 2021',
-            responsibilities: [
-              'Developed front-end with React and Vue.js',
-              'Integrated REST and GraphQL APIs',
-              'Optimized web performance'
-            ]
-          }
-        ],
-        education: [
-          {
-            id: `edu-${Date.now()}`,
-            degree: 'Master of Science in Computer Science',
-            institution: 'University of New York',
-            year: '2019',
-            details: [
-              'Specialization in web development',
-              'Final project on AI applied to the web'
-            ]
-          }
-        ],
-        skills: {
-          languages: 'JavaScript, TypeScript, Python, Java',
-          frameworks: 'React, Node.js, Express, Vue.js, Django',
-          tools: 'Git, Docker, AWS, MongoDB, PostgreSQL',
-          softSkills: 'Leadership, Communication, Problem-solving, Teamwork'
-        },
-        achievements: [
-          'Increased application performance by 40%',
-          'Certified AWS Solutions Architect',
-          'Finalist in the TechChallenge 2023 hackathon'
-        ]
-      };
-      
-      onImport(mockProfile);
-      onClose();
-    } catch (err) {
-      setError('Error importing LinkedIn profile. Please check the URL and try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleImport = () => {
-    if (!linkedinUrl.trim()) {
-      setError('Please enter a valid LinkedIn URL');
-      return;
-    }
-    
-    if (!linkedinUrl.includes('linkedin.com')) {
-      setError('Please enter a valid LinkedIn URL');
-      return;
-    }
-    
-    parseLinkedInProfile(linkedinUrl);
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="linkedin-modal-overlay">
-      <div className="linkedin-modal">
-        <button onClick={onClose} className="close-button">
-          <X size={24} />
-        </button>
-        
-        <div className="linkedin-modal-content">
-          <div className="linkedin-icon-container">
-            <Linkedin size={48} color="#0077B5" />
-          </div>
-          
-          <h2 className="linkedin-modal-title">Import from LinkedIn</h2>
-          <p className="linkedin-modal-description">
-            Enter your LinkedIn profile URL to automatically fill your CV
-          </p>
-          
-          <div className="linkedin-input-container">
-            <input
-              type="url"
-              value={linkedinUrl}
-              onChange={(e) => setLinkedinUrl(e.target.value)}
-              placeholder="https://www.linkedin.com/in/your-profile"
-              className="linkedin-input"
-              disabled={isLoading}
-            />
-          </div>
-          
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
-          
-          <div className="linkedin-modal-buttons">
-            <button 
-              onClick={onClose} 
-              className="cancel-button"
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={handleImport} 
-              className="import-button"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <div className="loading-spinner"></div>
-                  Importing...
-                </>
-              ) : (
-                <>
-                  <Upload size={16} />
-                  Import
-                </>
-              )}
-            </button>
-          </div>
-          
-          <div className="linkedin-disclaimer">
-            <small>
-              Note: This feature is in demo mode. In a production environment,
-              it would require the LinkedIn API or special permissions.
-            </small>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const CVSectionOrganizer1 = ({ onClose }) => {
   const [sections, setSections] = useState([
     { id: 1, name: 'Professional Exp.', fullName: 'Professional Experience', column: 'left' },
@@ -213,7 +42,6 @@ const CVSectionOrganizer1 = ({ onClose }) => {
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverColumn, setDragOverColumn] = useState(null);
   const [showTemplate, setShowTemplate] = useState(false);
-  const [showLinkedInImport, setShowLinkedInImport] = useState(false);
   const cvTemplateRef = useRef(null);
   
   const [name, setName] = useState('');
@@ -230,46 +58,12 @@ const CVSectionOrganizer1 = ({ onClose }) => {
     { id: `edu-${Date.now()}`, degree: '', institution: '', year: '', details: ['', ''] }
   ]);
   const [profile, setProfile] = useState('');
-  const [skills, setSkills] = useState({
-    allSkills: ''
-  });
-  const [achievements, setAchievements] = useState(['', '', '']);
-
-  // New function to handle data imported from LinkedIn
-  const handleLinkedInImport = useCallback((profileData) => {
-    setName(profileData.name || '');
-    setTitle(profileData.title || '');
-    setEmail(profileData.email || '');
-    setPhone(profileData.phone || '');
-    setCity(profileData.city || '');
-    setProfile(profileData.profile || '');
-    
-    // Set experiences, handling potential empty responsibilities
-    if (profileData.experiences) {
-      setExperiences(profileData.experiences.map(exp => ({ 
-        ...exp, 
-        responsibilities: exp.responsibilities && exp.responsibilities.length > 0 ? exp.responsibilities : [''] 
-      })));
-    }
-    
-    // Set education
-    if (profileData.education) {
-      setEducation(profileData.education);
-    }
-    
-    // Set skills, joining them into a single string
-    if (profileData.skills) {
-      setSkills({ allSkills: Object.values(profileData.skills).join(', ') });
-    }
-    
-    // Set achievements
-    if (profileData.achievements) {
-      setAchievements(profileData.achievements);
-    }
-    
-    // Automatically switch to the template view after import
-    setShowTemplate(true);
-  }, []);
+  const [skills, setSkills] = useState([
+    { id: `skill-${Date.now()}`, category: '', skillsList: '' }
+  ]);
+  const [achievements, setAchievements] = useState([
+    { id: `achievement-${Date.now()}`, achievement: '' }
+  ]);
 
   const handleDragStart = useCallback((e, section) => {
     setDraggedItem(section);
@@ -326,6 +120,10 @@ const CVSectionOrganizer1 = ({ onClose }) => {
     ]);
   }, []);
 
+  const removeExperience = useCallback((index) => {
+    setExperiences(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
   const updateEducation = useCallback((index, field, value) => {
     setEducation(prev => {
       const newEducation = [...prev];
@@ -344,16 +142,53 @@ const CVSectionOrganizer1 = ({ onClose }) => {
     });
   }, []);
 
-  const updateSkill = useCallback((value) => {
-    setSkills({ allSkills: value });
+  const addEducation = useCallback(() => {
+    setEducation(prev => [
+      ...prev,
+      { id: `edu-${Date.now()}-${Math.random()}`, degree: '', institution: '', year: '', details: ['', ''] }
+    ]);
+  }, []);
+
+  const removeEducation = useCallback((index) => {
+    setEducation(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const updateSkill = useCallback((index, field, value) => {
+    setSkills(prev => {
+      const newSkills = [...prev];
+      newSkills[index] = { ...newSkills[index], [field]: value };
+      return newSkills;
+    });
+  }, []);
+
+  const addSkill = useCallback(() => {
+    setSkills(prev => [
+      ...prev,
+      { id: `skill-${Date.now()}-${Math.random()}`, category: '', skillsList: '' }
+    ]);
+  }, []);
+
+  const removeSkill = useCallback((index) => {
+    setSkills(prev => prev.filter((_, i) => i !== index));
   }, []);
 
   const updateAchievement = useCallback((index, value) => {
     setAchievements(prev => {
       const newAchievements = [...prev];
-      newAchievements[index] = value;
+      newAchievements[index] = { ...newAchievements[index], achievement: value };
       return newAchievements;
     });
+  }, []);
+
+  const addAchievement = useCallback(() => {
+    setAchievements(prev => [
+      ...prev,
+      { id: `achievement-${Date.now()}-${Math.random()}`, achievement: '' }
+    ]);
+  }, []);
+
+  const removeAchievement = useCallback((index) => {
+    setAchievements(prev => prev.filter((_, i) => i !== index));
   }, []);
 
   const handleImageUpload = useCallback((event) => {
@@ -368,181 +203,28 @@ const CVSectionOrganizer1 = ({ onClose }) => {
   const downloadCV = useCallback(() => {
     const element = cvTemplateRef.current;
     if (element) {
-      // Find the achievements section and hide it if all its children are empty
-      const achievementSection = element.querySelector('.achievements-section');
-      if (achievementSection) {
-        const achievementInputs = achievementSection.querySelectorAll('.achievement');
-        const hasContent = Array.from(achievementInputs).some(input => input.value.trim() !== '');
-        if (!hasContent) {
-          achievementSection.style.display = 'none';
-        }
-      }
+      // Clone the element to avoid modifying the original DOM
+      const clonedElement = element.cloneNode(true);
+      // Remove all elements with the no-print class
+      const noPrintElements = clonedElement.querySelectorAll('.no-print');
+      noPrintElements.forEach(el => el.remove());
 
       const opt = {
-        margin: 0.5,
-        filename: `CV_${name || 'MyCV'}.pdf`,
+        margin: [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right in inches
+        filename: `${name.replace(/\s+/g, '_') || 'resume'}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
-      
-      html2pdf().from(element).set(opt).save().then(() => {
-        // Restore visibility after download
-        if (achievementSection) {
-          achievementSection.style.display = '';
-        }
-      });
+
+      html2pdf().from(clonedElement).set(opt).save();
     }
-  }, [name, cvTemplateRef]);
+  }, [name]);
 
   const printCV = useCallback(() => {
-    const element = cvTemplateRef.current;
-    if (element) {
-      // Hide action buttons for printing
-      const actionButtons = element.querySelector('.action-buttons');
-      if (actionButtons) actionButtons.style.display = 'none';
+    window.print();
+  }, []);
 
-      // Find the achievements section and hide it if all its children are empty
-      const achievementSection = element.querySelector('.achievements-section');
-      if (achievementSection) {
-        const achievementInputs = achievementSection.querySelectorAll('.achievement');
-        const hasContent = Array.from(achievementInputs).some(input => input.value.trim() !== '');
-        if (!hasContent) {
-          achievementSection.style.display = 'none';
-        }
-      }
-
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) return;
-
-      const content = `
-        <html>
-          <head>
-            <title>CV - ${name || 'My CV'}</title>
-            <style>
-              body {
-                font-family: 'Georgia', serif;
-                margin: 0;
-                padding: 20px;
-                line-height: 1.6;
-                color: #333;
-                background-color: white;
-              }
-              .cv-content {
-                width: 8.5in;
-                height: 11in;
-                margin: 0 auto;
-                box-sizing: border-box;
-                padding: 0;
-              }
-              .cv-header {
-                padding: 10px 0 20px 0;
-                border-bottom: 2px solid #4F46E5;
-                margin-bottom: 20px;
-                display: flex;
-                align-items: center;
-                gap: 20px;
-              }
-              .profile-image {
-                width: 100px;
-                height: 100px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 2px solid #4F46E5;
-              }
-              .name-container {
-                flex-grow: 1;
-              }
-              .name-input {
-                font-size: 28px;
-                font-weight: bold;
-                margin: 0 0 5px 0;
-                color: #1F2937;
-              }
-              .title-input {
-                font-size: 16px;
-                color: #6B7280;
-              }
-              .contact-info {
-                font-size: 14px;
-                color: #6B7280;
-                text-align: right;
-              }
-              .contact-item {
-                display: block;
-              }
-              .columns {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 30px;
-              }
-              .column {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-              }
-              .section {
-                break-inside: avoid;
-                margin: 0;
-              }
-              .section-title {
-                font-size: 18px;
-                font-weight: bold;
-                color: #4F46E5;
-                margin-bottom: 10px;
-                border-bottom: 1px solid #E5E7EB;
-                padding-bottom: 5px;
-              }
-              .section-content ul {
-                margin: 0;
-                padding-left: 20px;
-              }
-              .section-content li {
-                margin-bottom: 5px;
-              }
-              .experience-item, .education-item, .project-item {
-                margin-bottom: 15px;
-                padding: 10px;
-                background-color: #F9FAFB;
-                border-radius: 6px;
-                break-inside: avoid;
-              }
-              .job-title, .degree {
-                font-weight: bold;
-                font-size: 14px;
-                margin: 0 0 3px 0;
-              }
-              .company, .institution {
-                font-style: italic;
-                font-size: 13px;
-                margin: 0 0 5px 0;
-              }
-              .responsibility-list li, .detail-list li, .achievements-list li {
-                font-size: 12px;
-              }
-            </style>
-          </head>
-          <body>
-            ${element.innerHTML}
-          </body>
-        </html>
-      `;
-
-      printWindow.document.write(content);
-      printWindow.document.close();
-      printWindow.focus();
-
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-        // Restore visibility after printing
-        if (actionButtons) actionButtons.style.display = '';
-        if (achievementSection) achievementSection.style.display = '';
-      }, 500);
-    }
-  }, [name, cvTemplateRef]);
-
-  // Updated renderSection to dynamically render achievements
   const renderSection = useCallback((section) => {
     switch (section.fullName) {
       case 'Professional Experience':
@@ -574,15 +256,20 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                       <EditableInput
                         value={resp}
                         onChange={(value) => updateExperienceResponsibility(index, respIndex, value)}
-                        placeholder="Responsibility"
+                        placeholder="Key responsibility or achievement"
                         className="responsibility"
                       />
                     </li>
                   ))}
                 </ul>
+                {experiences.length > 1 && (
+                  <button onClick={() => removeExperience(index)} className="remove-button no-print">
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
-            <button onClick={addExperience} className="add-button">
+            <button onClick={addExperience} className="add-button no-print">
               + Add Experience
             </button>
           </div>
@@ -623,8 +310,16 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                     </li>
                   ))}
                 </ul>
+                {education.length > 1 && (
+                  <button onClick={() => removeEducation(index)} className="remove-button no-print">
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
+            <button onClick={addEducation} className="add-button no-print">
+              + Add Education
+            </button>
           </div>
         );
 
@@ -644,25 +339,42 @@ const CVSectionOrganizer1 = ({ onClose }) => {
       case 'Skills':
         return (
           <div className="skills-section">
-            <EditableInput
-              value={skills.allSkills}
-              onChange={(value) => updateSkill(value)}
-              placeholder="Write down your skills here..."
-              multiline={true}
-              className="skill-single"
-            />
+            {skills.map((skill, index) => (
+              <div key={skill.id} className="skill-item">
+                <EditableInput
+                  value={skill.category}
+                  onChange={(value) => updateSkill(index, 'category', value)}
+                  placeholder="Skill Category (e.g., Programming Languages, Tools)"
+                  className="skill-category"
+                />
+                <EditableInput
+                  value={skill.skillsList}
+                  onChange={(value) => updateSkill(index, 'skillsList', value)}
+                  placeholder="List your skills (e.g., JavaScript, React, Node.js)"
+                  multiline={true}
+                  className="skills-list"
+                />
+                {skills.length > 1 && (
+                  <button onClick={() => removeSkill(index)} className="remove-button no-print">
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <button onClick={addSkill} className="add-button no-print">
+              + Add Skill Category
+            </button>
           </div>
         );
 
       case 'Achievements':
-        // Display a list of editable inputs for achievements, including empty ones
         return (
           <div className="achievements-section">
             <ul className="achievements-list">
               {achievements.map((achievement, index) => (
-                <li key={`achievement-${index}`}>
+                <li key={achievement.id}>
                   <EditableInput
-                    value={achievement}
+                    value={achievement.achievement}
                     onChange={(value) => updateAchievement(index, value)}
                     placeholder={
                       index === 0 ? "Quantified achievement with metrics (e.g., Increased sales by 20%)" :
@@ -671,16 +383,24 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                     }
                     className="achievement"
                   />
+                  {achievements.length > 1 && (
+                    <button onClick={() => removeAchievement(index)} className="remove-button achievement-remove no-print">
+                      Remove
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
+            <button onClick={addAchievement} className="add-button no-print">
+              + Add Achievement
+            </button>
           </div>
         );
 
       default:
         return <div>Section not recognized</div>;
     }
-  }, [experiences, education, profile, skills, achievements, updateExperience, updateExperienceResponsibility, updateEducation, updateEducationDetail, updateSkill, updateAchievement, addExperience]);
+  }, [experiences, education, profile, skills, achievements, updateExperience, updateExperienceResponsibility, updateEducation, updateEducationDetail, updateSkill, updateAchievement, addExperience, addEducation, addSkill, addAchievement, removeExperience, removeEducation, removeSkill, removeAchievement]);
 
   const renderTemplate = () => {
     const leftSections = getColumnSections('left');
@@ -690,7 +410,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
       <div className="template-container">
         <button 
           onClick={() => setShowTemplate(false)}
-          className="close-button"
+          className="close-button no-print"
         >
           <X size={24} />
         </button>
@@ -702,13 +422,12 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                 {profileImage ? (
                   <img
                     src={profileImage}
-                    alt="Profile Photo"
+                    alt="Profile"
                     className="profile-image"
                   />
                 ) : (
-                  <div 
-                    className="image-placeholder"
-                  >
+                  <div className="image-placeholder">
+                    Click to add photo
                   </div>
                 )}
                 <input
@@ -793,7 +512,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
           </div>
         </div>
 
-        <div className="action-buttons">
+        <div className="action-buttons no-print">
           <button
             onClick={() => setShowTemplate(false)}
             className="return-button"
@@ -820,104 +539,301 @@ const CVSectionOrganizer1 = ({ onClose }) => {
   };
 
   return (
-    <div className="modal">
-      
-      <LinkedInImportModal 
-        isOpen={showLinkedInImport}
-        onClose={() => setShowLinkedInImport(false)}
-        onImport={handleLinkedInImport}
-      />
-      
-      {showTemplate ? renderTemplate() : (
-        <div className="organizer-container">
-          <button onClick={onClose} className="close-button">
-            <X size={24} />
-          </button>
+    <>
+      <style jsx>{`
+        /* --- General Styles --- */
+        :root {
+          --primary-color: #4F46E5;
+          --secondary-color: #10B981;
+          --text-color: #374151;
+          --light-gray: #F9FAFB;
+          --medium-gray: #E5E7EB;
+          --dark-gray: #6B7280;
+          --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          --font-family-serif: 'Georgia', serif;
+        }
 
-          <h2 className="organizer-title">
-            Drag and drop to rearrange CV sections
-          </h2>
+        /* --- Print-Specific Styles --- */
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          .modal {
+            position: static;
+            width: auto;
+            height: auto;
+            background-color: transparent;
+            display: block;
+          }
+          .template-container {
+            box-shadow: none;
+            padding: 0;
+            max-height: none;
+            overflow: visible;
+            border-radius: 0;
+          }
+        }
 
-          <div className="linkedin-import-section">
-            <button 
-              onClick={() => setShowLinkedInImport(true)}
-              className="linkedin-import-button"
-            >
-              <Linkedin size={20} />
-              Import from LinkedIn
+        /* Modal and Organizer Styles */
+        .modal {
+          position: fixed; top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 1000;
+        }
+        .organizer-container, .template-container {
+          background-color: white;
+          border-radius: 16px;
+          padding: 32px;
+          max-width: 90vw;
+          position: relative;
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .organizer-container { width: 520px; }
+        .template-container { width: 900px; max-height: 90vh; overflow: auto; }
+        .close-button {
+          position: absolute; top: 20px; right: 20px;
+          background: none; border: none; cursor: pointer;
+          padding: 4px; color: var(--dark-gray);
+          transition: color 0.2s ease;
+        }
+        .close-button:hover { color: var(--text-color); }
+        .organizer-title {
+          font-size: 24px; font-weight: 600; color: var(--text-color);
+          text-align: center; margin: 0 0 32px 0; line-height: 1.3;
+        }
+        .page-indicator {
+          text-align: center; color: var(--dark-gray);
+          font-size: 14px; margin-bottom: 24px;
+        }
+        .content-area {
+          background-color: var(--light-gray); border-radius: 8px;
+          padding: 20px; min-height: 400px;
+        }
+        .header-section {
+          background-color: #C7D2FE; border-radius: 6px; padding: 12px;
+          margin-bottom: 16px; display: flex; align-items: center;
+          gap: 8px; color: var(--primary-color);
+          font-size: 14px; font-weight: 500;
+        }
+        .header-icon {
+          width: 16px; height: 16px;
+          background-color: var(--primary-color); border-radius: 2px;
+        }
+
+        /* Drag and Drop Organizer */
+        .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .column { min-height: 300px; border-radius: 6px; padding: 4px; }
+        .column.drag-over { background-color: #EEF2FF; }
+        .section-item {
+          background-color: #E0E7FF; border-radius: 6px; padding: 12px;
+          margin-bottom: 8px; display: flex; align-items: center;
+          gap: 8px; cursor: grab; color: var(--primary-color);
+          font-size: 14px; font-weight: 500;
+        }
+        .section-item.opacity-50 { opacity: 0.5; }
+
+        /* Continue Button */
+        .continue-button-container { display: flex; justify-content: center; margin-top: 24px; }
+        .continue-button {
+          background-color: var(--secondary-color); color: white; border: none;
+          border-radius: 12px; padding: 16px 32px; font-size: 18px;
+          font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+          transform: translateY(0); min-width: 200px;
+        }
+        .continue-button:hover {
+          background-color: #059669; transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        /* CV Template Styles */
+        .cv-content {
+          font-family: var(--font-family-serif); line-height: 1.6;
+          color: var(--text-color); display: flex; flex-direction: column; gap: 20px;
+        }
+        .cv-header {
+          display: flex; align-items: flex-start; justify-content: space-between;
+          border-bottom: 2px solid var(--primary-color);
+          padding-bottom: 20px; margin-bottom: 20px;
+        }
+        .profile-and-name { display: flex; align-items: flex-start; gap: 20px; width: 100%; }
+        .name-and-contact { display: flex; flex-direction: column; gap: 15px; flex-grow: 1; }
+        .image-container { position: relative; cursor: pointer; }
+        .profile-image {
+          width: 120px; height: 120px; border-radius: 50%;
+          border: 3px solid var(--primary-color); object-fit: cover;
+        }
+        .image-placeholder {
+          width: 120px; height: 120px; border-radius: 50%; background-color: #F3F4F6;
+          border: 2px dashed #D1D5DB; display: flex; align-items: center;
+          justify-content: center; transition: all 0.2s ease;
+          font-size: 12px; color: #6B7280; text-align: center; padding: 10px;
+        }
+        .image-placeholder:hover { background-color: #E5E7EB; border-color: var(--primary-color); }
+        .hidden { display: none; }
+        .name-container { text-align: left; }
+        .name-input { font-size: 32px; font-weight: bold; color: #1F2937; }
+        .title-input { font-size: 18px; color: var(--dark-gray); margin-top: 5px; }
+        .contact-info {
+          display: flex; flex-direction: row; align-items: center;
+          gap: 25px; font-size: 14px; color: var(--dark-gray); margin-top: 15px;
+        }
+        .contact-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .contact-item .editable-input { min-width: 120px; font-size: 14px; }
+
+        .section { margin: 0; }
+        .section-title {
+          font-size: 20px; font-weight: bold; color: var(--primary-color);
+          margin-bottom: 15px; border-bottom: 1px solid var(--medium-gray); padding-bottom: 5px;
+        }
+        .section-content { color: var(--dark-gray); font-size: 14px; }
+        
+        .action-buttons {
+          text-align: center; margin-top: 30px; padding: 20px;
+          background-color: #F3F4F6; border-radius: 8px; display: flex;
+          justify-content: center; gap: 15px;
+        }
+        .return-button, .download-button, .print-button {
+          border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px;
+          cursor: pointer; font-weight: 600; display: flex; align-items: center;
+          gap: 8px; transition: all 0.2s ease;
+        }
+        .return-button { background-color: #6B7280; color: white; }
+        .return-button:hover { background-color: #4B5563; }
+        .download-button { background-color: var(--secondary-color); color: white; }
+        .download-button:hover { background-color: #059669; }
+        .print-button { background-color: var(--primary-color); color: white; }
+        .print-button:hover { background-color: #4338CA; }
+
+        /* CV Section Items */
+        .editable-input {
+          border: 1px solid transparent; border-radius: 4px; padding: 4px 8px;
+          background-color: transparent; font-size: inherit; font-family: inherit;
+          color: inherit; width: 100%; outline: none; transition: all 0.2s ease;
+          box-sizing: border-box;
+        }
+        .editable-input:focus { border-color: var(--primary-color); background-color: var(--light-gray); }
+        .editable-input::placeholder { color: #9CA3AF; opacity: 1; }
+        
+        .add-button {
+          background-color: var(--primary-color); color: white; border: none;
+          border-radius: 6px; padding: 8px 16px; font-size: 14px;
+          cursor: pointer; margin-top: 10px; transition: background-color 0.2s ease;
+        }
+        .add-button:hover { background-color: #4338CA; }
+        
+        .remove-button {
+          background-color: #EF4444; color: white; border: none;
+          border-radius: 4px; padding: 4px 8px; font-size: 12px;
+          cursor: pointer; margin-top: 8px; transition: background-color 0.2s ease;
+        }
+        .remove-button:hover { background-color: #DC2626; }
+        .achievement-remove { margin-left: 8px; margin-top: 4px; }
+
+        .experience-item, .education-item, .profile-section, .skills-section, .achievements-section {
+          margin-bottom: 20px; padding: 15px;
+          background-color: var(--light-gray); border-radius: 8px;
+        }
+        .skill-item {
+          margin-bottom: 15px; padding: 10px; background-color: white;
+          border-radius: 6px; border: 1px solid var(--medium-gray);
+        }
+        .job-title, .degree { font-weight: bold; font-size: 16px; }
+        .company, .institution { font-style: italic; font-size: 14px; }
+        
+        .responsibility-list, .detail-list, .achievements-list {
+          list-style-type: disc; padding-left: 20px; margin: 10px 0 0 0;
+        }
+        .responsibility-list li, .detail-list li, .achievements-list li { margin-bottom: 5px; position: relative; }
+        .responsibility, .detail, .achievement { font-size: 14px; }
+        .skills-section .editable-input { font-size: 14px; }
+        .profile { font-size: 14px; }
+        .skill-category { font-weight: bold; margin-bottom: 5px; }
+        .skills-list {
+          border: 1px solid var(--medium-gray); padding: 10px;
+          background-color: white; border-radius: 4px;
+        }
+      `}</style>
+      <div className="modal">
+        {showTemplate ? renderTemplate() : (
+          <div className="organizer-container">
+            <button onClick={onClose} className="close-button">
+              <X size={24} />
             </button>
-            
-            <div className="import-divider">
-              <span>or create manually</span>
-            </div>
-          </div>
 
-          <div className="page-indicator">Page 1 of 1</div>
+            <h2 className="organizer-title">
+              Drag and drop to rearrange CV sections
+            </h2>
 
-          <div className="content-area">
-            <div className="header-section">
-              <div className="header-icon"></div>
-              Header
-            </div>
+            <div className="page-indicator">Page 1 of 1</div>
 
-            <div className="columns">
-              <div 
-                className={`column ${dragOverColumn === 'left' ? 'drag-over' : ''}`}
-                onDragOver={(e) => handleDragOver(e, 'left')}
-                onDrop={(e) => handleDrop(e, 'left')}
-              >
-                {getColumnSections('left').map((section) => (
-                  <div
-                    key={section.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, section)}
-                    className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
-                    onDragEnd={() => setDraggedItem(null)}
-                    role="button"
-                    aria-grabbed={draggedItem?.id === section.id}
-                    aria-label={`Move section ${section.name}`}
-                  >
-                    <GripVertical size={16} color="#6B7280" />
-                    {section.name}
-                  </div>
-                ))}
+            <div className="content-area">
+              <div className="header-section">
+                <div className="header-icon"></div>
+                Header
               </div>
 
-              <div 
-                className={`column ${dragOverColumn === 'right' ? 'drag-over' : ''}`}
-                onDragOver={(e) => handleDragOver(e, 'right')}
-                onDrop={(e) => handleDrop(e, 'right')}
-              >
-                {getColumnSections('right').map((section) => (
-                  <div
-                    key={section.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, section)}
-                    className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
-                    onDragEnd={() => setDraggedItem(null)}
-                    role="button"
-                    aria-grabbed={draggedItem?.id === section.id}
-                    aria-label={`Move section ${section.name}`}
-                  >
-                    <GripVertical size={16} color="#6B7280" />
-                    {section.name}
-                  </div>
-                ))}
+              <div className="columns">
+                <div 
+                  className={`column ${dragOverColumn === 'left' ? 'drag-over' : ''}`}
+                  onDragOver={(e) => handleDragOver(e, 'left')}
+                  onDrop={(e) => handleDrop(e, 'left')}
+                >
+                  {getColumnSections('left').map((section) => (
+                    <div
+                      key={section.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, section)}
+                      className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
+                      onDragEnd={() => setDraggedItem(null)}
+                      role="button"
+                      aria-grabbed={draggedItem?.id === section.id}
+                      aria-label={`Move section ${section.name}`}
+                    >
+                      <GripVertical size={16} color="#6B7280" />
+                      {section.name}
+                    </div>
+                  ))}
+                </div>
+
+                <div 
+                  className={`column ${dragOverColumn === 'right' ? 'drag-over' : ''}`}
+                  onDragOver={(e) => handleDragOver(e, 'right')}
+                  onDrop={(e) => handleDrop(e, 'right')}
+                >
+                  {getColumnSections('right').map((section) => (
+                    <div
+                      key={section.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, section)}
+                      className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
+                      onDragEnd={() => setDraggedItem(null)}
+                      role="button"
+                      aria-grabbed={draggedItem?.id === section.id}
+                      aria-label={`Move section ${section.name}`}
+                    >
+                      <GripVertical size={16} color="#6B7280" />
+                      {section.name}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="continue-button-container">
-            <button 
-              onClick={() => setShowTemplate(true)}
-              className="continue-button"
-            >
-              Continue to Edit
-            </button>
+            <div className="continue-button-container">
+              <button 
+                onClick={() => setShowTemplate(true)}
+                className="continue-button"
+              >
+                Continue to Edit
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
