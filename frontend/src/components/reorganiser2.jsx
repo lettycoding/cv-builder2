@@ -1,82 +1,80 @@
 import React, { useState, useCallback, memo, useRef } from 'react';
 import { X, GripVertical, Mail, Phone, MapPin, Download, Printer, Bot } from 'lucide-react';
+import axios from 'axios';
+import html2pdf from 'html2pdf.js';
 
-const AIHelpButton = memo(({ sectionType, onAIHelp }) => {
+const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
   const [showAIInput, setShowAIInput] = useState(false);
   const [aiQuery, setAIQuery] = useState('');
+  const [aiResponse, setAIResponse] = useState('');
   const [isAILoading, setIsAILoading] = useState(false);
 
   const handleAIHelp = useCallback(async () => {
     if (!aiQuery.trim()) return;
-    
+
     setIsAILoading(true);
-    
-    // Simulate AI response - in real app, this would call an AI service
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock AI response based on the section type and query
-      let aiResponse = '';
-      const query = aiQuery.toLowerCase();
-      
-      if (sectionType === 'experience') {
-        if (query.includes('responsibility') || query.includes('achievement')) {
-          aiResponse = 'Led development of customer-facing web application serving 10,000+ users daily, resulting in 25% increase in user engagement';
-        } else {
-          aiResponse = 'AI suggestion for professional experience based on: ' + aiQuery;
-        }
-      } else if (sectionType === 'education') {
-        aiResponse = 'Master of Science in Computer Science - Stanford University, 2020. Specialization in Machine Learning and Data Science';
-      } else if (sectionType === 'profile') {
-        aiResponse = 'Experienced software engineer with 5+ years developing scalable web applications. Passionate about clean code, user experience, and leading cross-functional teams to deliver high-impact solutions.';
-      } else if (sectionType === 'skills') {
-        aiResponse = 'Programming Languages: JavaScript, Python, Java, TypeScript\nFrameworks & Libraries: React, Node.js, Express, Django\nTools & Technologies: AWS, Docker, Git, MongoDB, PostgreSQL';
-      } else if (sectionType === 'achievements') {
-        aiResponse = 'Increased application performance by 40% through code optimization and database query improvements';
-      } else {
-        aiResponse = 'AI-generated content for ' + sectionType + ': ' + aiQuery;
-      }
-      
-      onAIHelp(aiResponse, sectionType);
-      setShowAIInput(false);
-      setAIQuery('');
+      // Ensure sectionContent is a valid object
+      const content = sectionContent || {};
+      const prompt = `For a CV ${sectionType} section, perform the following: ${aiQuery}. Current content: ${JSON.stringify(content)}`;
+
+      console.log('Sending prompt to backend:', prompt); // Debug log
+
+      // Send POST request to backend
+      const response = await axios.post('http://localhost:5000/api/ai/ask', { prompt });
+
+      const aiResult = response.data.answer || 'No response received';
+      console.log('AI Response:', aiResult); // Debug log
+      setAIResponse(aiResult);
     } catch (error) {
-      console.error('AI help error:', error);
+      console.error('AI help error:', error.message, error.response?.data); // Enhanced error logging
+      alert('Failed to fetch AI response. Please check your connection or try again later.');
     } finally {
       setIsAILoading(false);
     }
-  }, [aiQuery, onAIHelp, sectionType]);
+  }, [aiQuery, sectionType, sectionContent]);
+
+  const handleApplyResponse = useCallback(() => {
+    if (aiResponse) {
+      console.log('Applying AI response:', aiResponse, 'to section:', sectionType); // Debug log
+      onAIHelp(aiResponse, sectionType);
+      setAIResponse('');
+      setShowAIInput(false);
+      setAIQuery('');
+    }
+  }, [aiResponse, onAIHelp, sectionType]);
 
   const getPlaceholder = () => {
     switch (sectionType) {
       case 'experience':
-        return 'Ask AI to write professional experience content';
+        return 'e.g., Correct spelling errors in my responsibilities or Write a new responsibility';
       case 'education':
-        return 'Ask AI to format education information';
+        return 'e.g., Format my education details or Correct spelling errors';
       case 'profile':
-        return 'Ask AI to write a professional profile summary';
+        return 'e.g., Improve my profile summary or Correct spelling errors';
       case 'skills':
-        return 'Ask AI to suggest relevant skills for your field';
+        return 'e.g., Suggest skills for my field or Correct spelling errors';
       case 'achievements':
-        return 'Ask AI to write quantified achievements';
+        return 'e.g., Write a quantified achievement or Correct spelling errors';
       default:
         return 'Ask AI for help with this section';
     }
   };
 
   return (
-    <div className="ai-help-section">
+    <div className="ai-help-section no-print">
       {!showAIInput ? (
-        <button 
+        <button
           onClick={() => setShowAIInput(true)}
-          className="ai-help-button"
+          className="ai-help-button no-print"
           type="button"
         >
           <Bot size={16} />
           Ask AI for help
         </button>
       ) : (
-        <div className="ai-input-container">
+        <div className="ai-input-container no-print">
           <input
             type="text"
             value={aiQuery}
@@ -85,8 +83,17 @@ const AIHelpButton = memo(({ sectionType, onAIHelp }) => {
             className="ai-input"
             onKeyPress={(e) => e.key === 'Enter' && handleAIHelp()}
           />
+          {aiResponse && (
+            <textarea
+              value={aiResponse}
+              readOnly
+              placeholder="AI response will appear here"
+              className="ai-response-textarea"
+              rows={4}
+            />
+          )}
           <div className="ai-buttons">
-            <button 
+            <button
               onClick={handleAIHelp}
               className="ai-submit-button"
               disabled={isAILoading || !aiQuery.trim()}
@@ -94,10 +101,20 @@ const AIHelpButton = memo(({ sectionType, onAIHelp }) => {
             >
               {isAILoading ? '...' : 'Ask'}
             </button>
-            <button 
+            {aiResponse && (
+              <button
+                onClick={handleApplyResponse}
+                className="ai-apply-button"
+                type="button"
+              >
+                Apply
+              </button>
+            )}
+            <button
               onClick={() => {
                 setShowAIInput(false);
                 setAIQuery('');
+                setAIResponse('');
               }}
               className="ai-cancel-button"
               type="button"
@@ -119,7 +136,7 @@ const EditableInput = memo(({ value, onChange, placeholder, multiline = false, c
   }, [onChange]);
 
   const InputComponent = multiline ? 'textarea' : 'input';
-  const inputProps = multiline 
+  const inputProps = multiline
     ? { rows: 3 }
     : { type: 'text' };
 
@@ -150,14 +167,14 @@ const CVSectionOrganizer2 = ({ onClose }) => {
   const [dragOverColumn, setDragOverColumn] = useState(null);
   const [showTemplate, setShowTemplate] = useState(false);
   const cvTemplateRef = useRef(null);
-  
+
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  
+
   const [experiences, setExperiences] = useState([
     { id: `exp-${Date.now()}`, jobTitle: '', company: '', dates: '', responsibilities: [''] }
   ]);
@@ -186,9 +203,9 @@ const CVSectionOrganizer2 = ({ onClose }) => {
     e.preventDefault();
     if (!draggedItem) return;
 
-    setSections(prev => 
-      prev.map(section => 
-        section.id === draggedItem.id 
+    setSections(prev =>
+      prev.map(section =>
+        section.id === draggedItem.id
           ? { ...section, column: targetColumn }
           : section
       )
@@ -295,71 +312,80 @@ const CVSectionOrganizer2 = ({ onClose }) => {
   }, []);
 
   const handleAIHelp = useCallback((aiContent, sectionType) => {
-    switch (sectionType) {
-      case 'experience':
-        // Add AI content to the first experience's responsibility
-        if (experiences.length > 0) {
-          setExperiences(prev => {
-            const newExp = [...prev];
-            if (newExp[0].responsibilities[0] === '') {
-              newExp[0].responsibilities[0] = aiContent;
-            } else {
-              newExp[0].responsibilities.push(aiContent);
-            }
-            return newExp;
-          });
-        }
-        break;
-      case 'education':
-        // Add AI content to first education entry
-        if (education.length > 0) {
-          const parts = aiContent.split(' - ');
-          if (parts.length >= 2) {
-            setEducation(prev => {
-              const newEdu = [...prev];
-              newEdu[0] = {
-                ...newEdu[0],
-                degree: parts[0] || newEdu[0].degree,
-                institution: parts[1] || newEdu[0].institution,
-                year: parts[2] || newEdu[0].year
-              };
-              return newEdu;
+    console.log('Handling AI content:', aiContent, 'for section:', sectionType); // Debug log
+    try {
+      switch (sectionType) {
+        case 'experience':
+          if (experiences.length > 0) {
+            setExperiences(prev => {
+              const newExp = [...prev];
+              if (newExp[0].responsibilities[0] === '') {
+                newExp[0].responsibilities[0] = aiContent;
+              } else {
+                newExp[0].responsibilities.push(aiContent);
+              }
+              return newExp;
             });
           }
-        }
-        break;
-      case 'profile':
-        setProfile(aiContent);
-        break;
-      case 'skills':
-        // Add AI content to first skill category
-        if (skills.length > 0) {
-          setSkills(prev => {
-            const newSkills = [...prev];
-            newSkills[0] = {
-              ...newSkills[0],
-              category: 'Technical Skills',
-              skillsList: aiContent
-            };
-            return newSkills;
-          });
-        }
-        break;
-      case 'achievements':
-        // Add AI content to first achievement
-        if (achievements.length > 0) {
-          setAchievements(prev => {
-            const newAchievements = [...prev];
-            newAchievements[0] = {
-              ...newAchievements[0],
-              achievement: aiContent
-            };
-            return newAchievements;
-          });
-        }
-        break;
+          break;
+        case 'education':
+          if (education.length > 0) {
+            const parts = aiContent.split(' - ');
+            if (parts.length >= 2) {
+              setEducation(prev => {
+                const newEdu = [...prev];
+                newEdu[0] = {
+                  ...newEdu[0],
+                  degree: parts[0] || newEdu[0].degree,
+                  institution: parts[1] || newEdu[0].institution,
+                  year: parts[2] || newEdu[0].year
+                };
+                return newEdu;
+              });
+            } else {
+              setEducation(prev => {
+                const newEdu = [...prev];
+                newEdu[0].details[0] = aiContent;
+                return newEdu;
+              });
+            }
+          }
+          break;
+        case 'profile':
+          setProfile(aiContent);
+          break;
+        case 'skills':
+          if (skills.length > 0) {
+            setSkills(prev => {
+              const newSkills = [...prev];
+              newSkills[0] = {
+                ...newSkills[0],
+                category: 'Technical Skills',
+                skillsList: aiContent
+              };
+              return newSkills;
+            });
+          }
+          break;
+        case 'achievements':
+          if (achievements.length > 0) {
+            setAchievements(prev => {
+              const newAchievements = [...prev];
+              newAchievements[0] = {
+                ...newAchievements[0],
+                achievement: aiContent
+              };
+              return newAchievements;
+            });
+          }
+          break;
+        default:
+          console.warn('Unknown section type:', sectionType);
+      }
+    } catch (error) {
+      console.error('Error in handleAIHelp:', error);
     }
-  }, [experiences, education, skills, achievements]);
+  }, [experiences, education, profile, skills, achievements]);
 
   const removeAchievement = useCallback((index) => {
     setAchievements(prev => prev.filter((_, i) => i !== index));
@@ -377,16 +403,47 @@ const CVSectionOrganizer2 = ({ onClose }) => {
   const downloadCV = useCallback(() => {
     const element = cvTemplateRef.current;
     if (element) {
-      // Simple download simulation - in real app you'd use html2pdf
-      alert('CV would be downloaded as PDF in a real implementation');
+      // Clone the element to avoid modifying the original DOM
+      const clonedElement = element.cloneNode(true);
+      // Remove all elements with the no-print class
+      const noPrintElements = clonedElement.querySelectorAll('.no-print');
+      noPrintElements.forEach(el => el.remove());
+
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right in inches
+        filename: `${name.replace(/\s+/g, '_') || 'resume'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().from(clonedElement).set(opt).save();
     }
-  }, []);
+  }, [name]);
 
   const printCV = useCallback(() => {
     window.print();
   }, []);
 
+  const getSectionContent = useCallback((sectionName) => {
+    switch (sectionName) {
+      case 'Professional Experience':
+        return experiences[0] || {};
+      case 'Education':
+        return education[0] || {};
+      case 'Professional Profile':
+        return { profile };
+      case 'Skills':
+        return skills[0] || {};
+      case 'Achievements':
+        return achievements[0] || {};
+      default:
+        return {};
+    }
+  }, [experiences, education, profile, skills, achievements]);
+
   const renderSection = useCallback((section) => {
+    const sectionContent = getSectionContent(section.fullName);
     switch (section.fullName) {
       case 'Professional Experience':
         return (
@@ -424,16 +481,16 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                   ))}
                 </ul>
                 {experiences.length > 1 && (
-                  <button onClick={() => removeExperience(index)} className="remove-button">
+                  <button onClick={() => removeExperience(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addExperience} className="add-button">
+            <button onClick={addExperience} className="add-button no-print">
               + Add Experience
             </button>
-            <AIHelpButton sectionType="experience" onAIHelp={handleAIHelp} />
+            <AIHelpButton sectionType="experience" onAIHelp={handleAIHelp} sectionContent={sectionContent} />
           </div>
         );
 
@@ -473,16 +530,16 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                   ))}
                 </ul>
                 {education.length > 1 && (
-                  <button onClick={() => removeEducation(index)} className="remove-button">
+                  <button onClick={() => removeEducation(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addEducation} className="add-button">
+            <button onClick={addEducation} className="add-button no-print">
               + Add Education
             </button>
-            <AIHelpButton sectionType="education" onAIHelp={handleAIHelp} />
+            <AIHelpButton sectionType="education" onAIHelp={handleAIHelp} sectionContent={sectionContent} />
           </div>
         );
 
@@ -496,7 +553,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
               multiline={true}
               className="profile"
             />
-            <AIHelpButton sectionType="profile" onAIHelp={handleAIHelp} />
+            <AIHelpButton sectionType="profile" onAIHelp={handleAIHelp} sectionContent={sectionContent} />
           </div>
         );
 
@@ -519,16 +576,16 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                   className="skills-list"
                 />
                 {skills.length > 1 && (
-                  <button onClick={() => removeSkill(index)} className="remove-button">
+                  <button onClick={() => removeSkill(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addSkill} className="add-button">
+            <button onClick={addSkill} className="add-button no-print">
               + Add Skill Category
             </button>
-            <AIHelpButton sectionType="skills" onAIHelp={handleAIHelp} />
+            <AIHelpButton sectionType="skills" onAIHelp={handleAIHelp} sectionContent={sectionContent} />
           </div>
         );
 
@@ -549,24 +606,24 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                     className="achievement"
                   />
                   {achievements.length > 1 && (
-                    <button onClick={() => removeAchievement(index)} className="remove-button achievement-remove">
+                    <button onClick={() => removeAchievement(index)} className="remove-button achievement-remove no-print">
                       Remove
                     </button>
                   )}
                 </li>
               ))}
             </ul>
-            <button onClick={addAchievement} className="add-button">
+            <button onClick={addAchievement} className="add-button no-print">
               + Add Achievement
             </button>
-            <AIHelpButton sectionType="achievements" onAIHelp={handleAIHelp} />
+            <AIHelpButton sectionType="achievements" onAIHelp={handleAIHelp} sectionContent={sectionContent} />
           </div>
         );
 
       default:
         return <div>Section not recognized</div>;
     }
-  }, [experiences, education, profile, skills, achievements, updateExperience, updateExperienceResponsibility, updateEducation, updateEducationDetail, updateSkill, updateAchievement, addExperience, addEducation, addSkill, addAchievement, removeExperience, removeEducation, removeSkill, removeAchievement]);
+  }, [experiences, education, profile, skills, achievements, updateExperience, updateExperienceResponsibility, updateEducation, updateEducationDetail, updateSkill, updateAchievement, addExperience, addEducation, addSkill, addAchievement, removeExperience, removeEducation, removeSkill, removeAchievement, getSectionContent]);
 
   const renderTemplate = () => {
     const leftSections = getColumnSections('left');
@@ -574,13 +631,13 @@ const CVSectionOrganizer2 = ({ onClose }) => {
 
     return (
       <div className="template-container">
-        <button 
+        <button
           onClick={() => setShowTemplate(false)}
-          className="close-button"
+          className="close-button no-print"
         >
           <X size={24} />
         </button>
-        
+
         <div id="cv-template-to-print" ref={cvTemplateRef} className="cv-content">
           <div className="cv-header">
             <div className="profile-and-name">
@@ -605,51 +662,51 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                 />
               </div>
 
-                <div className="name-and-contact">
-                  <div className="name-container">
+              <div className="name-and-contact">
+                <div className="name-container">
+                  <EditableInput
+                    value={name}
+                    onChange={setName}
+                    placeholder="Your Full Name"
+                    className="name-input"
+                  />
+                  <EditableInput
+                    value={title}
+                    onChange={setTitle}
+                    placeholder="Job Title"
+                    className="title-input"
+                  />
+                </div>
+                <div className="contact-info">
+                  <div className="contact-item">
+                    <Mail size={16} color="#4F46E5" />
                     <EditableInput
-                      value={name}
-                      onChange={setName}
-                      placeholder="Your Full Name"
-                      className="name-input"
-                    />
-                    <EditableInput
-                      value={title}
-                      onChange={setTitle}
-                      placeholder="Job Title"
-                      className="title-input"
+                      value={email}
+                      onChange={setEmail}
+                      placeholder="email@example.com"
+                      className="email-input"
                     />
                   </div>
-                  <div className="contact-info">
-                    <div className="contact-item">
-                      <Mail size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={email}
-                        onChange={setEmail}
-                        placeholder="email@example.com"
-                        className="email-input"
-                      />
-                    </div>
-                    <div className="contact-item">
-                      <Phone size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={phone}
-                        onChange={setPhone}
-                        placeholder="Phone"
-                        className="phone-input"
-                      />
-                    </div>
-                    <div className="contact-item">
-                      <MapPin size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={city}
-                        onChange={setCity}
-                        placeholder="City"
-                        className="city-input"
-                      />
-                    </div>
+                  <div className="contact-item">
+                    <Phone size={16} color="#4F46E5" />
+                    <EditableInput
+                      value={phone}
+                      onChange={setPhone}
+                      placeholder="Phone"
+                      className="phone-input"
+                    />
+                  </div>
+                  <div className="contact-item">
+                    <MapPin size={16} color="#4F46E5" />
+                    <EditableInput
+                      value={city}
+                      onChange={setCity}
+                      placeholder="City"
+                      className="city-input"
+                    />
                   </div>
                 </div>
+              </div>
             </div>
           </div>
 
@@ -678,7 +735,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           </div>
         </div>
 
-        <div className="action-buttons">
+        <div className="action-buttons no-print">
           <button
             onClick={() => setShowTemplate(false)}
             className="return-button"
@@ -707,7 +764,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
   return (
     <>
       <style jsx>{`
-        /* General improvements and consolidation of styles */
         :root {
           --primary-color: #4F46E5;
           --secondary-color: #10B981;
@@ -719,7 +775,26 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           --font-family-serif: 'Georgia', serif;
         }
 
-        /* Modal and Organizer Styles */
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          .modal {
+            position: static;
+            width: auto;
+            height: auto;
+            background-color: transparent;
+            display: block;
+          }
+          .template-container {
+            box-shadow: none;
+            padding: 0;
+            max-height: none;
+            overflow: visible;
+            border-radius: 0;
+          }
+        }
+
         .modal {
           position: fixed;
           top: 0;
@@ -810,7 +885,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           border-radius: 2px;
         }
 
-        /* Drag and Drop Organizer */
         .columns {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -868,7 +942,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
         }
 
-        /* CV Template Styles */
         .cv-content {
           font-family: var(--font-family-serif);
           line-height: 1.6;
@@ -1044,14 +1117,13 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           font-weight: 500;
         }
         .ai-help-button:hover {
-          opacity: 1;
           transform: translateY(-1px);
         }
 
         .ai-input-container {
           display: flex;
-          align-items: center;
-          gap: 6px;
+          flex-direction: column;
+          gap: 8px;
           margin-top: 5px;
         }
 
@@ -1069,15 +1141,26 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
         }
 
+        .ai-response-textarea {
+          border: 1px solid #8B5CF6;
+          border-radius: 4px;
+          padding: 6px 8px;
+          font-size: 12px;
+          background-color: #F3F4F6;
+          resize: none;
+          width: 100%;
+          color: #374151;
+        }
+
         .ai-buttons {
           display: flex;
           gap: 4px;
         }
 
-        .ai-submit-button, .ai-cancel-button {
+        .ai-submit-button, .ai-apply-button, .ai-cancel-button {
           border: none;
           border-radius: 4px;
-          padding: 6px 8px;
+          padding: 6px 12px;
           font-size: 12px;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -1095,6 +1178,14 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           cursor: not-allowed;
         }
 
+        .ai-apply-button {
+          background-color: #10B981;
+          color: white;
+        }
+        .ai-apply-button:hover {
+          background-color: #059669;
+        }
+
         .ai-cancel-button {
           background-color: #EF4444;
           color: white;
@@ -1102,6 +1193,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
         .ai-cancel-button:hover {
           background-color: #DC2626;
         }
+
         .editable-input {
           border: 1px solid transparent;
           border-radius: 4px;
@@ -1232,7 +1324,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
               </div>
 
               <div className="columns">
-                <div 
+                <div
                   className={`column ${dragOverColumn === 'left' ? 'drag-over' : ''}`}
                   onDragOver={(e) => handleDragOver(e, 'left')}
                   onDrop={(e) => handleDrop(e, 'left')}
@@ -1254,7 +1346,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
                   ))}
                 </div>
 
-                <div 
+                <div
                   className={`column ${dragOverColumn === 'right' ? 'drag-over' : ''}`}
                   onDragOver={(e) => handleDragOver(e, 'right')}
                   onDrop={(e) => handleDrop(e, 'right')}
@@ -1279,7 +1371,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
             </div>
 
             <div className="continue-button-container">
-              <button 
+              <button
                 onClick={() => setShowTemplate(true)}
                 className="continue-button"
               >

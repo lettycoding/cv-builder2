@@ -1,5 +1,6 @@
 import React, { useState, useCallback, memo, useRef } from 'react';
 import { X, GripVertical, Mail, Phone, MapPin, Download, Printer } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
 
 const EditableInput = memo(({ value, onChange, placeholder, multiline = false, className }) => {
   const handleChange = useCallback((e) => {
@@ -202,10 +203,23 @@ const CVSectionOrganizer1 = ({ onClose }) => {
   const downloadCV = useCallback(() => {
     const element = cvTemplateRef.current;
     if (element) {
-      // Simple download simulation - in real app you'd use html2pdf
-      alert('CV would be downloaded as PDF in a real implementation');
+      // Clone the element to avoid modifying the original DOM
+      const clonedElement = element.cloneNode(true);
+      // Remove all elements with the no-print class
+      const noPrintElements = clonedElement.querySelectorAll('.no-print');
+      noPrintElements.forEach(el => el.remove());
+
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right in inches
+        filename: `${name.replace(/\s+/g, '_') || 'resume'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().from(clonedElement).set(opt).save();
     }
-  }, []);
+  }, [name]);
 
   const printCV = useCallback(() => {
     window.print();
@@ -249,13 +263,13 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                   ))}
                 </ul>
                 {experiences.length > 1 && (
-                  <button onClick={() => removeExperience(index)} className="remove-button">
+                  <button onClick={() => removeExperience(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addExperience} className="add-button">
+            <button onClick={addExperience} className="add-button no-print">
               + Add Experience
             </button>
           </div>
@@ -297,13 +311,13 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                   ))}
                 </ul>
                 {education.length > 1 && (
-                  <button onClick={() => removeEducation(index)} className="remove-button">
+                  <button onClick={() => removeEducation(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addEducation} className="add-button">
+            <button onClick={addEducation} className="add-button no-print">
               + Add Education
             </button>
           </div>
@@ -341,13 +355,13 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                   className="skills-list"
                 />
                 {skills.length > 1 && (
-                  <button onClick={() => removeSkill(index)} className="remove-button">
+                  <button onClick={() => removeSkill(index)} className="remove-button no-print">
                     Remove
                   </button>
                 )}
               </div>
             ))}
-            <button onClick={addSkill} className="add-button">
+            <button onClick={addSkill} className="add-button no-print">
               + Add Skill Category
             </button>
           </div>
@@ -370,14 +384,14 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                     className="achievement"
                   />
                   {achievements.length > 1 && (
-                    <button onClick={() => removeAchievement(index)} className="remove-button achievement-remove">
+                    <button onClick={() => removeAchievement(index)} className="remove-button achievement-remove no-print">
                       Remove
                     </button>
                   )}
                 </li>
               ))}
             </ul>
-            <button onClick={addAchievement} className="add-button">
+            <button onClick={addAchievement} className="add-button no-print">
               + Add Achievement
             </button>
           </div>
@@ -396,7 +410,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
       <div className="template-container">
         <button 
           onClick={() => setShowTemplate(false)}
-          className="close-button"
+          className="close-button no-print"
         >
           <X size={24} />
         </button>
@@ -408,7 +422,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                 {profileImage ? (
                   <img
                     src={profileImage}
-                    alt="Profile Photo"
+                    alt="Profile"
                     className="profile-image"
                   />
                 ) : (
@@ -425,51 +439,51 @@ const CVSectionOrganizer1 = ({ onClose }) => {
                 />
               </div>
 
-                <div className="name-and-contact">
-                  <div className="name-container">
+              <div className="name-and-contact">
+                <div className="name-container">
+                  <EditableInput
+                    value={name}
+                    onChange={setName}
+                    placeholder="Your Full Name"
+                    className="name-input"
+                  />
+                  <EditableInput
+                    value={title}
+                    onChange={setTitle}
+                    placeholder="Job Title"
+                    className="title-input"
+                  />
+                </div>
+                <div className="contact-info">
+                  <div className="contact-item">
+                    <Mail size={16} color="#4F46E5" />
                     <EditableInput
-                      value={name}
-                      onChange={setName}
-                      placeholder="Your Full Name"
-                      className="name-input"
-                    />
-                    <EditableInput
-                      value={title}
-                      onChange={setTitle}
-                      placeholder="Job Title"
-                      className="title-input"
+                      value={email}
+                      onChange={setEmail}
+                      placeholder="email@example.com"
+                      className="email-input"
                     />
                   </div>
-                  <div className="contact-info">
-                    <div className="contact-item">
-                      <Mail size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={email}
-                        onChange={setEmail}
-                        placeholder="email@example.com"
-                        className="email-input"
-                      />
-                    </div>
-                    <div className="contact-item">
-                      <Phone size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={phone}
-                        onChange={setPhone}
-                        placeholder="Phone"
-                        className="phone-input"
-                      />
-                    </div>
-                    <div className="contact-item">
-                      <MapPin size={16} color="#4F46E5" />
-                      <EditableInput
-                        value={city}
-                        onChange={setCity}
-                        placeholder="City"
-                        className="city-input"
-                      />
-                    </div>
+                  <div className="contact-item">
+                    <Phone size={16} color="#4F46E5" />
+                    <EditableInput
+                      value={phone}
+                      onChange={setPhone}
+                      placeholder="Phone"
+                      className="phone-input"
+                    />
+                  </div>
+                  <div className="contact-item">
+                    <MapPin size={16} color="#4F46E5" />
+                    <EditableInput
+                      value={city}
+                      onChange={setCity}
+                      placeholder="City"
+                      className="city-input"
+                    />
                   </div>
                 </div>
+              </div>
             </div>
           </div>
 
@@ -498,7 +512,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
           </div>
         </div>
 
-        <div className="action-buttons">
+        <div className="action-buttons no-print">
           <button
             onClick={() => setShowTemplate(false)}
             className="return-button"
@@ -527,7 +541,7 @@ const CVSectionOrganizer1 = ({ onClose }) => {
   return (
     <>
       <style jsx>{`
-        /* General improvements and consolidation of styles */
+        /* --- General Styles --- */
         :root {
           --primary-color: #4F46E5;
           --secondary-color: #10B981;
@@ -539,419 +553,207 @@ const CVSectionOrganizer1 = ({ onClose }) => {
           --font-family-serif: 'Georgia', serif;
         }
 
-        /* Modal and Organizer Styles */
-        .modal {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
+        /* --- Print-Specific Styles --- */
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          .modal {
+            position: static;
+            width: auto;
+            height: auto;
+            background-color: transparent;
+            display: block;
+          }
+          .template-container {
+            box-shadow: none;
+            padding: 0;
+            max-height: none;
+            overflow: visible;
+            border-radius: 0;
+          }
         }
 
+        /* Modal and Organizer Styles */
+        .modal {
+          position: fixed; top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 1000;
+        }
         .organizer-container, .template-container {
           background-color: white;
           border-radius: 16px;
           padding: 32px;
           max-width: 90vw;
           position: relative;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         }
-
-        .organizer-container {
-          width: 520px;
-        }
-
-        .template-container {
-          width: 900px;
-          max-height: 90vh;
-          overflow: auto;
-        }
-
+        .organizer-container { width: 520px; }
+        .template-container { width: 900px; max-height: 90vh; overflow: auto; }
         .close-button {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 4px;
-          color: var(--dark-gray);
+          position: absolute; top: 20px; right: 20px;
+          background: none; border: none; cursor: pointer;
+          padding: 4px; color: var(--dark-gray);
           transition: color 0.2s ease;
         }
-        .close-button:hover {
-          color: var(--text-color);
-        }
-
+        .close-button:hover { color: var(--text-color); }
         .organizer-title {
-          font-size: 24px;
-          font-weight: 600;
-          color: var(--text-color);
-          text-align: center;
-          margin: 0 0 32px 0;
-          line-height: 1.3;
+          font-size: 24px; font-weight: 600; color: var(--text-color);
+          text-align: center; margin: 0 0 32px 0; line-height: 1.3;
         }
-
         .page-indicator {
-          text-align: center;
-          color: var(--dark-gray);
-          font-size: 14px;
-          margin-bottom: 24px;
+          text-align: center; color: var(--dark-gray);
+          font-size: 14px; margin-bottom: 24px;
         }
-
         .content-area {
-          background-color: var(--light-gray);
-          border-radius: 8px;
-          padding: 20px;
-          min-height: 400px;
+          background-color: var(--light-gray); border-radius: 8px;
+          padding: 20px; min-height: 400px;
         }
-
         .header-section {
-          background-color: #C7D2FE;
-          border-radius: 6px;
-          padding: 12px;
-          margin-bottom: 16px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: var(--primary-color);
-          font-size: 14px;
-          font-weight: 500;
+          background-color: #C7D2FE; border-radius: 6px; padding: 12px;
+          margin-bottom: 16px; display: flex; align-items: center;
+          gap: 8px; color: var(--primary-color);
+          font-size: 14px; font-weight: 500;
         }
-
         .header-icon {
-          width: 16px;
-          height: 16px;
-          background-color: var(--primary-color);
-          border-radius: 2px;
+          width: 16px; height: 16px;
+          background-color: var(--primary-color); border-radius: 2px;
         }
 
         /* Drag and Drop Organizer */
-        .columns {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-        .column {
-          min-height: 300px;
-          border-radius: 6px;
-          padding: 4px;
-        }
-        .column.drag-over {
-          background-color: #EEF2FF;
-        }
-
+        .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .column { min-height: 300px; border-radius: 6px; padding: 4px; }
+        .column.drag-over { background-color: #EEF2FF; }
         .section-item {
-          background-color: #E0E7FF;
-          border-radius: 6px;
-          padding: 12px;
-          margin-bottom: 8px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          cursor: grab;
-          color: var(--primary-color);
-          font-size: 14px;
-          font-weight: 500;
+          background-color: #E0E7FF; border-radius: 6px; padding: 12px;
+          margin-bottom: 8px; display: flex; align-items: center;
+          gap: 8px; cursor: grab; color: var(--primary-color);
+          font-size: 14px; font-weight: 500;
         }
-        .section-item.opacity-50 {
-          opacity: 0.5;
-        }
+        .section-item.opacity-50 { opacity: 0.5; }
 
-        .continue-button-container {
-          display: flex;
-          justify-content: center;
-          margin-top: 24px;
-        }
-
+        /* Continue Button */
+        .continue-button-container { display: flex; justify-content: center; margin-top: 24px; }
         .continue-button {
-          background-color: var(--secondary-color);
-          color: white;
-          border: none;
-          border-radius: 12px;
-          padding: 16px 32px;
-          font-size: 18px;
-          font-weight: 700;
-          cursor: pointer;
-          transition: all 0.3s ease;
+          background-color: var(--secondary-color); color: white; border: none;
+          border-radius: 12px; padding: 16px 32px; font-size: 18px;
+          font-weight: 700; cursor: pointer; transition: all 0.3s ease;
           box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-          transform: translateY(0);
-          min-width: 200px;
+          transform: translateY(0); min-width: 200px;
         }
         .continue-button:hover {
-          background-color: #059669;
-          transform: translateY(-2px);
+          background-color: #059669; transform: translateY(-2px);
           box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
         }
 
         /* CV Template Styles */
         .cv-content {
-          font-family: var(--font-family-serif);
-          line-height: 1.6;
-          color: var(--text-color);
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
+          font-family: var(--font-family-serif); line-height: 1.6;
+          color: var(--text-color); display: flex; flex-direction: column; gap: 20px;
         }
-
         .cv-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
+          display: flex; align-items: flex-start; justify-content: space-between;
           border-bottom: 2px solid var(--primary-color);
-          padding-bottom: 20px;
-          margin-bottom: 20px;
+          padding-bottom: 20px; margin-bottom: 20px;
         }
-        .profile-and-name {
-          display: flex;
-          align-items: flex-start;
-          gap: 20px;
-          width: 100%;
-        }
-        .name-and-contact {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          flex-grow: 1;
-        }
-        .image-container {
-          position: relative;
-          cursor: pointer;
-        }
+        .profile-and-name { display: flex; align-items: flex-start; gap: 20px; width: 100%; }
+        .name-and-contact { display: flex; flex-direction: column; gap: 15px; flex-grow: 1; }
+        .image-container { position: relative; cursor: pointer; }
         .profile-image {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          border: 3px solid var(--primary-color);
-          object-fit: cover;
+          width: 120px; height: 120px; border-radius: 50%;
+          border: 3px solid var(--primary-color); object-fit: cover;
         }
         .image-placeholder {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          background-color: #F3F4F6;
-          border: 2px dashed #D1D5DB;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-          font-size: 12px;
-          color: #6B7280;
-          text-align: center;
-          padding: 10px;
+          width: 120px; height: 120px; border-radius: 50%; background-color: #F3F4F6;
+          border: 2px dashed #D1D5DB; display: flex; align-items: center;
+          justify-content: center; transition: all 0.2s ease;
+          font-size: 12px; color: #6B7280; text-align: center; padding: 10px;
         }
-        .image-placeholder:hover {
-          background-color: #E5E7EB;
-          border-color: var(--primary-color);
-        }
-        .hidden {
-          display: none;
-        }
-        .name-container {
-          text-align: left;
-        }
-        .name-input {
-          font-size: 32px;
-          font-weight: bold;
-          color: #1F2937;
-        }
-        .title-input {
-          font-size: 18px;
-          color: var(--dark-gray);
-          margin-top: 5px;
-        }
+        .image-placeholder:hover { background-color: #E5E7EB; border-color: var(--primary-color); }
+        .hidden { display: none; }
+        .name-container { text-align: left; }
+        .name-input { font-size: 32px; font-weight: bold; color: #1F2937; }
+        .title-input { font-size: 18px; color: var(--dark-gray); margin-top: 5px; }
         .contact-info {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 25px;
-          font-size: 14px;
-          color: var(--dark-gray);
-          margin-top: 15px;
+          display: flex; flex-direction: row; align-items: center;
+          gap: 25px; font-size: 14px; color: var(--dark-gray); margin-top: 15px;
         }
-        .contact-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          white-space: nowrap;
-        }
-        .contact-item .editable-input {
-          min-width: 120px;
-          font-size: 14px;
-        }
+        .contact-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .contact-item .editable-input { min-width: 120px; font-size: 14px; }
 
-        .section {
-          margin: 0;
-        }
+        .section { margin: 0; }
         .section-title {
-          font-size: 20px;
-          font-weight: bold;
-          color: var(--primary-color);
-          margin-bottom: 15px;
-          border-bottom: 1px solid var(--medium-gray);
-          padding-bottom: 5px;
+          font-size: 20px; font-weight: bold; color: var(--primary-color);
+          margin-bottom: 15px; border-bottom: 1px solid var(--medium-gray); padding-bottom: 5px;
         }
-        .section-content {
-          color: var(--dark-gray);
-          font-size: 14px;
-        }
+        .section-content { color: var(--dark-gray); font-size: 14px; }
+        
         .action-buttons {
-          text-align: center;
-          margin-top: 30px;
-          padding: 20px;
-          background-color: #F3F4F6;
-          border-radius: 8px;
-          display: flex;
-          justify-content: center;
-          gap: 15px;
+          text-align: center; margin-top: 30px; padding: 20px;
+          background-color: #F3F4F6; border-radius: 8px; display: flex;
+          justify-content: center; gap: 15px;
         }
         .return-button, .download-button, .print-button {
-          border: none;
-          border-radius: 8px;
-          padding: 12px 24px;
-          font-size: 14px;
-          cursor: pointer;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: all 0.2s ease;
+          border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px;
+          cursor: pointer; font-weight: 600; display: flex; align-items: center;
+          gap: 8px; transition: all 0.2s ease;
         }
-        .return-button {
-          background-color: #6B7280;
-          color: white;
-        }
-        .return-button:hover {
-          background-color: #4B5563;
-        }
-        .download-button {
-          background-color: var(--secondary-color);
-          color: white;
-        }
-        .download-button:hover {
-          background-color: #059669;
-        }
-        .print-button {
-          background-color: var(--primary-color);
-          color: white;
-        }
-        .print-button:hover {
-          background-color: #4338CA;
-        }
+        .return-button { background-color: #6B7280; color: white; }
+        .return-button:hover { background-color: #4B5563; }
+        .download-button { background-color: var(--secondary-color); color: white; }
+        .download-button:hover { background-color: #059669; }
+        .print-button { background-color: var(--primary-color); color: white; }
+        .print-button:hover { background-color: #4338CA; }
 
         /* CV Section Items */
         .editable-input {
-          border: 1px solid transparent;
-          border-radius: 4px;
-          padding: 4px 8px;
-          background-color: transparent;
-          font-size: inherit;
-          font-family: inherit;
-          color: inherit;
-          width: 100%;
-          outline: none;
-          transition: all 0.2s ease;
+          border: 1px solid transparent; border-radius: 4px; padding: 4px 8px;
+          background-color: transparent; font-size: inherit; font-family: inherit;
+          color: inherit; width: 100%; outline: none; transition: all 0.2s ease;
           box-sizing: border-box;
         }
-        .editable-input:focus {
-          border-color: var(--primary-color);
-          background-color: var(--light-gray);
-        }
-        .editable-input::placeholder {
-          color: #9CA3AF;
-          opacity: 1;
-        }
-
+        .editable-input:focus { border-color: var(--primary-color); background-color: var(--light-gray); }
+        .editable-input::placeholder { color: #9CA3AF; opacity: 1; }
+        
         .add-button {
-          background-color: var(--primary-color);
-          color: white;
-          border: none;
-          border-radius: 6px;
-          padding: 8px 16px;
-          font-size: 14px;
-          cursor: pointer;
-          margin-top: 10px;
-          transition: background-color 0.2s ease;
+          background-color: var(--primary-color); color: white; border: none;
+          border-radius: 6px; padding: 8px 16px; font-size: 14px;
+          cursor: pointer; margin-top: 10px; transition: background-color 0.2s ease;
         }
-        .add-button:hover {
-          background-color: #4338CA;
-        }
-
+        .add-button:hover { background-color: #4338CA; }
+        
         .remove-button {
-          background-color: #EF4444;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          padding: 4px 8px;
-          font-size: 12px;
-          cursor: pointer;
-          margin-top: 8px;
-          transition: background-color 0.2s ease;
+          background-color: #EF4444; color: white; border: none;
+          border-radius: 4px; padding: 4px 8px; font-size: 12px;
+          cursor: pointer; margin-top: 8px; transition: background-color 0.2s ease;
         }
-        .remove-button:hover {
-          background-color: #DC2626;
-        }
-
-        .achievement-remove {
-          margin-left: 8px;
-          margin-top: 4px;
-        }
+        .remove-button:hover { background-color: #DC2626; }
+        .achievement-remove { margin-left: 8px; margin-top: 4px; }
 
         .experience-item, .education-item, .profile-section, .skills-section, .achievements-section {
-          margin-bottom: 20px;
-          padding: 15px;
-          background-color: var(--light-gray);
-          border-radius: 8px;
+          margin-bottom: 20px; padding: 15px;
+          background-color: var(--light-gray); border-radius: 8px;
         }
-
         .skill-item {
-          margin-bottom: 15px;
-          padding: 10px;
-          background-color: white;
-          border-radius: 6px;
-          border: 1px solid var(--medium-gray);
+          margin-bottom: 15px; padding: 10px; background-color: white;
+          border-radius: 6px; border: 1px solid var(--medium-gray);
         }
-
-        .job-title, .degree {
-          font-weight: bold;
-          font-size: 16px;
-        }
-        .company, .institution {
-          font-style: italic;
-          font-size: 14px;
-        }
-
+        .job-title, .degree { font-weight: bold; font-size: 16px; }
+        .company, .institution { font-style: italic; font-size: 14px; }
+        
         .responsibility-list, .detail-list, .achievements-list {
-          list-style-type: disc;
-          padding-left: 20px;
-          margin: 10px 0 0 0;
+          list-style-type: disc; padding-left: 20px; margin: 10px 0 0 0;
         }
-        .responsibility-list li, .detail-list li, .achievements-list li {
-          margin-bottom: 5px;
-          position: relative;
-        }
-        .responsibility, .detail, .achievement {
-          font-size: 14px;
-        }
-        .skills-section .editable-input {
-          font-size: 14px;
-        }
-        .profile {
-          font-size: 14px;
-        }
-        .skill-category {
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
+        .responsibility-list li, .detail-list li, .achievements-list li { margin-bottom: 5px; position: relative; }
+        .responsibility, .detail, .achievement { font-size: 14px; }
+        .skills-section .editable-input { font-size: 14px; }
+        .profile { font-size: 14px; }
+        .skill-category { font-weight: bold; margin-bottom: 5px; }
         .skills-list {
-          border: 1px solid var(--medium-gray);
-          padding: 10px;
-          background-color: white;
-          border-radius: 4px;
+          border: 1px solid var(--medium-gray); padding: 10px;
+          background-color: white; border-radius: 4px;
         }
       `}</style>
       <div className="modal">
