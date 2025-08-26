@@ -10,14 +10,14 @@ const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
   const [isAILoading, setIsAILoading] = useState(false);
 
   const handleAIHelp = useCallback(async () => {
-    if (!aiQuery.trim()) return;
-
     setIsAILoading(true);
 
     try {
       // Ensure sectionContent is a valid object
       const content = sectionContent || {};
-      const prompt = `For a CV ${sectionType} section, perform the following: ${aiQuery}. Current content: ${JSON.stringify(content)}`;
+      const prompt = sectionType === 'profile'
+        ? `For a CV ${sectionType} section, perform the following: ${aiQuery}. Current content: ${JSON.stringify(content)}`
+        : `Correct any spelling errors in the CV ${sectionType} section. Return only the corrected content. Current content: ${JSON.stringify(content)}`;
 
       console.log('Sending prompt to backend:', prompt); // Debug log
 
@@ -48,15 +48,15 @@ const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
   const getPlaceholder = () => {
     switch (sectionType) {
       case 'experience':
-        return 'e.g., Correct spelling errors in my responsibilities or Write a new responsibility';
+        return 'Spelling errors will be corrected automatically';
       case 'education':
-        return 'e.g., Format my education details or Correct spelling errors';
+        return 'Spelling errors will be corrected automatically';
       case 'profile':
         return 'e.g., Improve my profile summary or Correct spelling errors';
       case 'skills':
-        return 'e.g., Suggest skills for my field or Correct spelling errors';
+        return 'Spelling errors will be corrected automatically';
       case 'achievements':
-        return 'e.g., Write a quantified achievement or Correct spelling errors';
+        return 'Spelling errors will be corrected automatically';
       default:
         return 'Ask AI for help with this section';
     }
@@ -66,23 +66,30 @@ const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
     <div className="ai-help-section no-print">
       {!showAIInput ? (
         <button
-          onClick={() => setShowAIInput(true)}
+          onClick={() => {
+            setShowAIInput(true);
+            if (sectionType !== 'profile') {
+              handleAIHelp(); // Automatically trigger spelling correction for non-profile sections
+            }
+          }}
           className="ai-help-button no-print"
           type="button"
         >
           <Bot size={16} />
-          Ask AI for help
+          {sectionType === 'profile' ? 'Ask AI for help' : 'Correct any spelling error'}
         </button>
       ) : (
         <div className="ai-input-container no-print">
-          <input
-            type="text"
-            value={aiQuery}
-            onChange={(e) => setAIQuery(e.target.value)}
-            placeholder={getPlaceholder()}
-            className="ai-input"
-            onKeyPress={(e) => e.key === 'Enter' && handleAIHelp()}
-          />
+          {sectionType === 'profile' && (
+            <input
+              type="text"
+              value={aiQuery}
+              onChange={(e) => setAIQuery(e.target.value)}
+              placeholder={getPlaceholder()}
+              className="ai-input"
+              onKeyPress={(e) => e.key === 'Enter' && handleAIHelp()}
+            />
+          )}
           {aiResponse && (
             <textarea
               value={aiResponse}
@@ -93,14 +100,16 @@ const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
             />
           )}
           <div className="ai-buttons">
-            <button
-              onClick={handleAIHelp}
-              className="ai-submit-button"
-              disabled={isAILoading || !aiQuery.trim()}
-              type="button"
-            >
-              {isAILoading ? '...' : 'Ask'}
-            </button>
+            {sectionType === 'profile' && (
+              <button
+                onClick={handleAIHelp}
+                className="ai-submit-button"
+                disabled={isAILoading || !aiQuery.trim()}
+                type="button"
+              >
+                {isAILoading ? '...' : 'Ask'}
+              </button>
+            )}
             {aiResponse && (
               <button
                 onClick={handleApplyResponse}

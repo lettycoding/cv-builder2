@@ -61,9 +61,7 @@ const ResumeBuilderLanding = () => {
           
           
           <h1 className="main-title">
-            Create Your
-            <span className="gradient-text"> Perfect </span>
-            Resume
+            Create Your <span className="gradient-text"> Perfect </span> Resume
           </h1>
           
           <p className="subtitle">

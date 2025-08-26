@@ -20,6 +20,22 @@ import CVSectionOrganizer from './components/reorganiser';
 import ResumeBuilderLanding from './components/Connexion';
 import CVSectionOrganizer1 from './components/reorganiser1';
 import CVSectionOrganizer2 from './components/reorganiser2';
+import Pricing from './components/Pricing';
+
+function Footer() {
+  return (
+    <footer style={{
+      marginTop: 'auto',
+      padding: '50px 0',
+      background: 'rgb(78,59,149)',
+      color: '#fff',
+      textAlign: 'center',
+      fontSize: '1rem'
+    }}>
+      &copy; {new Date().getFullYear()} CV Builder. All rights reserved.
+    </footer>
+  );
+}
 
 function App() {
   const backgroundStyle = {
@@ -157,306 +173,309 @@ function App() {
 
   return (
     <Router>
-      <div style={{ position: 'relative', zIndex: 2 }}>
+      <div style={{ position: 'relative', zIndex: 2, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <main style={backgroundStyle}>
-                <div style={headingContainerStyle}>
-                  <div>
-                    <div style={{font:'58px rubik',margin:'32px 0px',color:'2D3639'}}>
-                      <h1 style={headingStyle}>
-                        ε-cv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
-                      </h1>
-                      <h1 style={headingStyle}>
-                        helps you get hired at top
-                      </h1>
-                      <h1 style={headingStyle}> companies</h1>
+        <div style={{ flex: 1 }}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <main style={backgroundStyle}>
+                  <div style={headingContainerStyle}>
+                    <div>
+                      <div style={{font:'58px rubik',margin:'32px 0px',color:'2D3639'}}>
+                        <h1 style={headingStyle}>
+                          ε-cv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
+                        </h1>
+                        <h1 style={headingStyle}>
+                          helps you get hired at top
+                        </h1>
+                        <h1 style={headingStyle}> companies</h1>
+                      </div>
+                      <div style={buttonContainerStyle}>
+                        <button style={buildButtonStyle}>Build Your Resume</button>
+                        <Link to="/resumescore" style={buildButtonStyle3}>
+                          <span style={{color:'rgb(56,67,71)'}}>Get Your Resume Score</span>
+                        </Link>
+                      </div>
+                      <div style={reviewStyle}>
+                        <span>Excellent</span>
+                        <span>
+                          <div style={starContainerStyle}>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div style={singleStarWrapperStyle}>
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                            <div
+                              style={{
+                                ...singleStarWrapperStyle,
+                                background: 'linear-gradient(to right, rgb(27,205,164) 50%, #fff 50%)'
+                              }}
+                            >
+                              <Star size={20} fill='#fff' style={starIconStyle} />
+                            </div>
+                          </div>
+                        </span>
+                        <span>4,662 Reviews</span>
+                      </div>
+                      <div>
+                        <h3></h3>
+                      </div>
                     </div>
-                    <div style={buttonContainerStyle}>
-                      <button style={buildButtonStyle}>Build Your Resume</button>
-                      <Link to="/resumescore" style={buildButtonStyle3}>
-                        <span style={{color:'rgb(56,67,71)'}}>Get Your Resume Score</span>
-                      </Link>
+                    <div><ImageCarousel /></div>
+                  </div>
+                  <Slider />
+                  <FeatureSection />
+                  <div style={headingContainerStyle}>
+                    <div>
+                      <h2 style={headingStyle3}>Resumes optimized for</h2>
+                      <h2 style={headingStyle3}> applicant tracking systems</h2>
+                      <h2 style={headingStyle3}> (ATS)</h2>
+                      <h3 style={headingStyle2}>
+                        ε-cv resumes and cover letters are vigorously tested against
+                      </h3>
+                      <h3> major ATS systems to ensure complete parsability</h3>
+                      <div style={buttonContainerStyle}>
+                        <button style={buildButtonStyle2}>Build an ATS-Friendly Resume</button>
+                      </div>
+                      <div>
+                        <h1>Trusted by Executives &</h1>
+                        <h1> Senior Professionals</h1>
+                      </div>
                     </div>
-                    <div style={reviewStyle}>
-                      <span>Excellent</span>
-                      <span>
-                        <div style={starContainerStyle}>
-                          <div style={singleStarWrapperStyle}>
-                            <Star size={20} fill='#fff' style={starIconStyle} />
-                          </div>
-                          <div style={singleStarWrapperStyle}>
-                            <Star size={20} fill='#fff' style={starIconStyle} />
-                          </div>
-                          <div style={singleStarWrapperStyle}>
-                            <Star size={20} fill='#fff' style={starIconStyle} />
-                          </div>
-                          <div style={singleStarWrapperStyle}>
-                            <Star size={20} fill='#fff' style={starIconStyle} />
-                          </div>
-                          <div
+                    <div style={{ display: 'center' }}>
+                      <div className="features">
+                        <div style={{ marginBottom: '100px' }}>
+                          <span
                             style={{
-                              ...singleStarWrapperStyle,
-                              background: 'linear-gradient(to right, rgb(27,205,164) 50%, #fff 50%)'
+                              fontSize: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              marginLeft: '10px',
+                              fontFamily: 'Rubik, sans-serif',
                             }}
                           >
-                            <Star size={20} fill='#fff' style={starIconStyle} />
-                          </div>
+                            <span
+                              style={{
+                                backgroundColor: 'rgb(212, 220, 228)',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRadius: '5px',
+                                height: '60px',
+                                width: '60px',
+                              }}
+                            >
+                              <Contact
+                                style={{
+                                  borderRadius: '5px',
+                                  width: '30px',
+                                  height: '30px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                              />
+                            </span>
+                            Readable contact information
+                          </span>
                         </div>
-                      </span>
-                      <span>4,662 Reviews</span>
-                    </div>
-                    <div>
-                      <h3></h3>
+                        <div style={{ marginBottom: '20px', marginLeft: '100px' }}>
+                          <span
+                            style={{
+                              fontSize: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              fontFamily: 'Rubik, sans-serif',
+                            }}
+                          >
+                            <span
+                              style={{
+                                backgroundColor: 'rgb(212, 220, 228)',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRadius: '5px',
+                                height: '60px',
+                                width: '60px',
+                              }}
+                            >
+                              <Rocket
+                                style={{
+                                  borderRadius: '5px',
+                                  width: '30px',
+                                  height: '30px',
+                                  marginRight: '8px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                              />
+                            </span>
+                            Full experience section parsing
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            marginLeft: '200px',
+                            marginTop: '100px',
+                            backgroundColor: 'transparent',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              fontFamily: 'Rubik, sans-serif',
+                            }}
+                          >
+                            <span
+                              style={{
+                                backgroundColor: 'rgb(212, 220, 228)',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRadius: '5px',
+                                height: '60px',
+                                width: '60px',
+                              }}
+                            >
+                              <Share2
+                                style={{
+                                  borderRadius: '5px',
+                                  width: '30px',
+                                  height: '30px',
+                                  marginRight: '8px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                size={20}
+                              />
+                            </span>
+                            Optimized skills section
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div><ImageCarousel /></div>
-                </div>
-                <Slider />
-                <FeatureSection />
-                <div style={headingContainerStyle}>
                   <div>
-                    <h2 style={headingStyle3}>Resumes optimized for</h2>
-                    <h2 style={headingStyle3}> applicant tracking systems</h2>
-                    <h2 style={headingStyle3}> (ATS)</h2>
-                    <h3 style={headingStyle2}>
-                      ε-cv resumes and cover letters are vigorously tested against
+                    <Reviews />
+                  </div>
+                  <div style={{ margin: '50px' }}>
+                    <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      Check your resume for grammatical and punctuation errors
+                    </h1>
+                    <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      A built-in content checker tool helping you stay on top of grammar errors and clichés
                     </h3>
-                    <h3> major ATS systems to ensure complete parsability</h3>
-                    <div style={buttonContainerStyle}>
-                      <button style={buildButtonStyle2}>Build an ATS-Friendly Resume</button>
-                    </div>
-                    <div>
-                      <h1>Trusted by Executives &</h1>
-                      <h1> Senior Professionals</h1>
-                    </div>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Wording and readability analysis
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Eliminate typos and grammatical errors
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Content suggestions based on your job and experience
+                    </h3>
                   </div>
-                  <div style={{ display: 'center' }}>
-                    <div className="features">
-                      <div style={{ marginBottom: '100px' }}>
-                        <span
-                          style={{
-                            fontSize: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginLeft: '10px',
-                            fontFamily: 'Rubik, sans-serif',
-                          }}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: 'rgb(212, 220, 228)',
-                              justifyContent: 'center',
-                              display: 'flex',
-                              alignItems: 'center',
-                              borderRadius: '5px',
-                              height: '60px',
-                              width: '60px',
-                            }}
-                          >
-                            <Contact
-                              style={{
-                                borderRadius: '5px',
-                                width: '30px',
-                                height: '30px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                            />
-                          </span>
-                          Readable contact information
-                        </span>
-                      </div>
-                      <div style={{ marginBottom: '20px', marginLeft: '100px' }}>
-                        <span
-                          style={{
-                            fontSize: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontFamily: 'Rubik, sans-serif',
-                          }}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: 'rgb(212, 220, 228)',
-                              justifyContent: 'center',
-                              display: 'flex',
-                              alignItems: 'center',
-                              borderRadius: '5px',
-                              height: '60px',
-                              width: '60px',
-                            }}
-                          >
-                            <Rocket
-                              style={{
-                                borderRadius: '5px',
-                                width: '30px',
-                                height: '30px',
-                                marginRight: '8px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                            />
-                          </span>
-                          Full experience section parsing
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          marginLeft: '200px',
-                          marginTop: '100px',
-                          backgroundColor: 'transparent',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontFamily: 'Rubik, sans-serif',
-                          }}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: 'rgb(212, 220, 228)',
-                              justifyContent: 'center',
-                              display: 'flex',
-                              alignItems: 'center',
-                              borderRadius: '5px',
-                              height: '60px',
-                              width: '60px',
-                            }}
-                          >
-                            <Share2
-                              style={{
-                                borderRadius: '5px',
-                                width: '30px',
-                                height: '30px',
-                                marginRight: '8px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                              size={20}
-                            />
-                          </span>
-                          Optimized skills section
-                        </span>
-                      </div>
-                    </div>
+                  <div style={{ margin: '50px', display: 'left' }}>
+                    <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      Resume tailoring based on the job you're applying for
+                    </h1>
+                    <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      Quickly ensure that your resume covers key skills and experiences by pasting the job ad you're applying for
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Skills and experience section analysis
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Actionable checklist of what else to add to your resume
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Instant comparison between your resume and the job posting
+                    </h3>
                   </div>
-                </div>
-                <div>
-                  <Reviews />
-                </div>
-                <div style={{ margin: '50px' }}>
-                  <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Check your resume for grammatical and punctuation errors
-                  </h1>
-                  <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    A built-in content checker tool helping you stay on top of grammar errors and clichés
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Wording and readability analysis
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Eliminate typos and grammatical errors
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Content suggestions based on your job and experience
-                  </h3>
-                </div>
-                <div style={{ margin: '50px', display: 'left' }}>
-                  <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Resume tailoring based on the job you're applying for
-                  </h1>
-                  <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Quickly ensure that your resume covers key skills and experiences by pasting the job ad you're applying for
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Skills and experience section analysis
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Actionable checklist of what else to add to your resume
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Instant comparison between your resume and the job posting
-                  </h3>
-                </div>
-                <div style={{ margin: '50px', display: 'left' }}>
-                  <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    20+ Professionally designed resume sections
-                  </h1>
-                  <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
-                    Express your professional history without limitations or worry about how your resume looks
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Professional sections like Experience, Skills, Summary and Education
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Personal sections like Strengths, Quotes, Books, Interests and my Time
-                  </h3>
-                  <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Other sections like Certifications, Awards, Achievements, Languages and References
-                  </h3>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 0,
-                    padding: 0,
-                  }}
-                >
-                  <h1 style={{ fontSize: '30px', textAlign: 'center', fontFamily: 'Rubik, sans-serif' }}>
-                    The resume builder that's right for your job and experience
-                  </h1>
-                </div>
-                <div>
-                  <button
+                  <div style={{ margin: '50px', display: 'left' }}>
+                    <h1 style={{ fontSize: '30px', marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      20+ Professionally designed resume sections
+                    </h1>
+                    <h3 style={{ marginBottom: '20px', fontFamily: 'Rubik, sans-serif' }}>
+                      Express your professional history without limitations or worry about how your resume looks
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Professional sections like Experience, Skills, Summary and Education
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Personal sections like Strengths, Quotes, Books, Interests and my Time
+                    </h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      <CircleCheck style={{ color: 'green', marginRight: '8px' }} /> Other sections like Certifications, Awards, Achievements, Languages and References
+                    </h3>
+                  </div>
+                  <div
                     style={{
-                      color: 'blue',
                       display: 'flex',
-                      alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: 'transparent',
-                      borderColor: 'white',
-                      borderRadius: '5px',
-                      height: '60px',
-                      width: '300px',
-                      fontFamily: 'Rubik, sans-serif',
+                      alignItems: 'center',
+                      margin: 0,
+                      padding: 0,
                     }}
                   >
-                    <span style={{ display: 'flex', alignItems: 'center', fontSize: '15px' }}>
-                      View All Resume Examples
-                    </span>{' '}
-                    <ArrowRight style={{ color: 'blue' }} />
-                  </button>
-                </div>
-              </main>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/get-started" element={<GetStarted />} />
-          <Route path="/upload-resume" element={<UploadResume />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/resumescore" element={<ResumeScore />} />
-          <Route path="/templates" element={<Templates />} />
-          
-          <Route path="/connexion" element={<ResumeBuilderLanding />} />
-          {/* Added new route for reorganiser */}
-          <Route path="/reorganiser" element={<CVSectionOrganizer />} />
-          <Route path="/reorganiser1" element={<CVSectionOrganizer1 />} />
-          <Route path="/reorganiser2" element={<CVSectionOrganizer2 />} />
-          
-          
-        </Routes>
+                    <h1 style={{ fontSize: '30px', textAlign: 'center', fontFamily: 'Rubik, sans-serif' }}>
+                      The resume builder that's right for your job and experience
+                    </h1>
+                  </div>
+                  <div>
+                    <button
+                      style={{
+                        color: 'blue',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'transparent',
+                        borderColor: 'white',
+                        borderRadius: '5px',
+                        height: '60px',
+                        width: '300px',
+                        fontFamily: 'Rubik, sans-serif',
+                      }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', fontSize: '15px' }}>
+                        View All Resume Examples
+                      </span>{' '}
+                      <ArrowRight style={{ color: 'blue' }} />
+                    </button>
+                  </div>
+                </main>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/upload-resume" element={<UploadResume />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/resumescore" element={<ResumeScore />} />
+            <Route path="/templates" element={<Templates />} />
+            
+            <Route path="/connexion" element={<ResumeBuilderLanding />} />
+            {/* Added new route for reorganiser */}
+            <Route path="/reorganiser" element={<CVSectionOrganizer />} />
+            <Route path="/reorganiser1" element={<CVSectionOrganizer1 />} />
+            <Route path="/reorganiser2" element={<CVSectionOrganizer2 />} />
+            <Route path="/pricing" element={<Pricing />} />
+            
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </Router>
   );
