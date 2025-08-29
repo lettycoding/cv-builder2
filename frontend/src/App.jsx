@@ -1,5 +1,7 @@
+// src/App.jsx
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Slider from './components/Slider';
 import ImageCarousel from './components/imageCarousel';
@@ -10,17 +12,39 @@ import UploadResume from './components/UploadResume';
 import { Share2, Rocket, Contact, CircleCheck, ArrowRight, Star } from 'lucide-react';
 import Reviews from './components/Reviews';
 import Account from './components/CreateAcc';
-import { Link } from 'react-router-dom';
 import ResumeScore from './components/ResumeScore';
-import grandientimage from './assets/gradient.svg'; // Ensure this path is correct
+import grandientimage from './assets/gradient.svg';
 import { RxFontStyle } from 'react-icons/rx';
-
-import Templates from './components/Templates';
 import CVSectionOrganizer from './components/reorganiser';
 import ResumeBuilderLanding from './components/Connexion';
-import CVSectionOrganizer1 from './components/reorganiser1';
 import CVSectionOrganizer2 from './components/reorganiser2';
 import Pricing from './components/Pricing';
+import CVPage1 from './components/Template1';
+import Templates from './components/Templates';
+import CVSectionOrganizer1 from './components/reorganiser1';
+import TemplateSelection from './components/TemplateSelection';
+
+const CVFlowManager = () => {
+  const [cvData, setCvData] = React.useState(null);
+  const [currentPage, setCurrentPage] = React.useState('reorganiser1');
+
+  const handleNext = (data) => {
+    setCvData(data);
+    setCurrentPage('templates');
+  };
+
+  const handleBack = () => {
+    setCurrentPage('reorganiser1');
+  };
+
+  if (currentPage === 'reorganiser1') {
+    return <CVSectionOrganizer1 onNext={handleNext} />;
+  } else if (currentPage === 'templates' && cvData) {
+    return <TemplateSelection resumeData={cvData} onBack={handleBack} />;
+  }
+
+  return null;
+};
 
 function Footer() {
   return (
@@ -66,12 +90,12 @@ function App() {
 
   const headingStyle = {
     fontSize: '58px',
-    lineheight:'76px',
+    lineHeight: '76px',
     fontWeight: 'bold',
     margin: 0,
-    color:'#2d2639',
-    fontstyle:'normal',
-    marginBottom:'10px',
+    color: '#2d2639',
+    fontStyle: 'normal',
+    marginBottom: '10px',
     fontFamily: 'Rubik, sans-serif',
   };
 
@@ -92,7 +116,7 @@ function App() {
   };
 
   const buildButtonStyle = {
-    marginTop:'25px',
+    marginTop: '25px',
     padding: '13px 16px',
     backgroundColor: 'rgb(27,205,164)',
     color: '#fff',
@@ -109,8 +133,8 @@ function App() {
     backgroundColor: 'transparent',
     borderRadius: '4px',
     fontSize: '18px',
-    borderStyle: 'solid',     
-    borderWidth: '2px',       
+    borderStyle: 'solid',
+    borderWidth: '2px',
     cursor: 'pointer',
     fontFamily: 'Rubik, sans-serif',
     textDecoration: 'none',
@@ -134,7 +158,7 @@ function App() {
 
   const starIconStyle = {
     color: 'white',
-    size:'2px',
+    size: '2px',
   };
 
   const headingStyle2 = {
@@ -183,7 +207,7 @@ function App() {
                 <main style={backgroundStyle}>
                   <div style={headingContainerStyle}>
                     <div>
-                      <div style={{font:'58px rubik',margin:'32px 0px',color:'2D3639'}}>
+                      <div style={{ font: '58px rubik', margin: '32px 0px', color: '2D3639' }}>
                         <h1 style={headingStyle}>
                           ε-cv's <span style={{ color: 'rgb(78,59,149)' }}>Resume Builder</span>
                         </h1>
@@ -195,7 +219,7 @@ function App() {
                       <div style={buttonContainerStyle}>
                         <button style={buildButtonStyle}>Build Your Resume</button>
                         <Link to="/resumescore" style={buildButtonStyle3}>
-                          <span style={{color:'rgb(56,67,71)'}}>Get Your Resume Score</span>
+                          <span style={{ color: 'rgb(56,67,71)' }}>Get Your Resume Score</span>
                         </Link>
                       </div>
                       <div style={reviewStyle}>
@@ -465,14 +489,11 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/resumescore" element={<ResumeScore />} />
             <Route path="/templates" element={<Templates />} />
-            
             <Route path="/connexion" element={<ResumeBuilderLanding />} />
-            {/* Added new route for reorganiser */}
             <Route path="/reorganiser" element={<CVSectionOrganizer />} />
-            <Route path="/reorganiser1" element={<CVSectionOrganizer1 />} />
+            <Route path="/reorganiser1" element={<CVFlowManager />} />
             <Route path="/reorganiser2" element={<CVSectionOrganizer2 />} />
-            <Route path="/pricing" element={<Pricing />} />
-            
+            <Route path="/pricing" element={<Templates />} />
           </Routes>
         </div>
         <Footer />

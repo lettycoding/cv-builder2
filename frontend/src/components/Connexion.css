@@ -1,6 +1,6 @@
 .landing-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fef7ed 0%, #fefce8 100%);
+  background: #f9f9f9;
   position: relative;
   overflow: hidden;
 }
@@ -164,18 +164,12 @@
   border-radius: 0px;
   padding: 15px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   height: 100%;
   cursor: pointer;
   transition: all 0.5s ease;
 }
 
-.card-content:hover {
-  background-color: rgba(255, 255, 255, 1);
-  border-color: #d1d5db;
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
+
 
 .option-card.selected .card-content {
   border: 2px solid #60a5fa;
@@ -192,9 +186,7 @@
   pointer-events: none; /* Ensure overlay doesn't block clicks */
 }
 
-.card-content:hover .gradient-overlay {
-  opacity: 0.1;
-}
+
 
 .gradient-blue-cyan {
   background: rgb(20,180,150);

@@ -1,7 +1,6 @@
 import React, { useState, useCallback, memo, useRef } from 'react';
-import { X, GripVertical, Mail, Phone, MapPin, Download, Printer, Bot } from 'lucide-react';
+import { X, Mail, Phone, MapPin, Bot } from 'lucide-react';
 import axios from 'axios';
-import html2pdf from 'html2pdf.js';
 
 const AIHelpButton = memo(({ sectionType, onAIHelp, sectionContent }) => {
   const [showAIInput, setShowAIInput] = useState(false);
@@ -172,9 +171,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
     { id: 6, name: 'Skills', fullName: 'Skills', column: 'right' }
   ]);
 
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [dragOverColumn, setDragOverColumn] = useState(null);
-  const [showTemplate, setShowTemplate] = useState(false);
   const cvTemplateRef = useRef(null);
 
   const [name, setName] = useState('');
@@ -197,32 +193,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
   const [achievements, setAchievements] = useState([
     { id: `achievement-${Date.now()}`, achievement: '' }
   ]);
-
-  const handleDragStart = useCallback((e, section) => {
-    setDraggedItem(section);
-    e.dataTransfer.effectAllowed = 'move';
-  }, []);
-
-  const handleDragOver = useCallback((e, column) => {
-    e.preventDefault();
-    setDragOverColumn(column);
-  }, []);
-
-  const handleDrop = useCallback((e, targetColumn) => {
-    e.preventDefault();
-    if (!draggedItem) return;
-
-    setSections(prev =>
-      prev.map(section =>
-        section.id === draggedItem.id
-          ? { ...section, column: targetColumn }
-          : section
-      )
-    );
-
-    setDraggedItem(null);
-    setDragOverColumn(null);
-  }, [draggedItem]);
 
   const getColumnSections = useCallback((column) => {
     return sections.filter(section => section.column === column);
@@ -407,31 +377,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
       reader.onload = (e) => setProfileImage(e.target?.result);
       reader.readAsDataURL(file);
     }
-  }, []);
-
-  const downloadCV = useCallback(() => {
-    const element = cvTemplateRef.current;
-    if (element) {
-      // Clone the element to avoid modifying the original DOM
-      const clonedElement = element.cloneNode(true);
-      // Remove all elements with the no-print class
-      const noPrintElements = clonedElement.querySelectorAll('.no-print');
-      noPrintElements.forEach(el => el.remove());
-
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right in inches
-        filename: `${name.replace(/\s+/g, '_') || 'resume'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-
-      html2pdf().from(clonedElement).set(opt).save();
-    }
-  }, [name]);
-
-  const printCV = useCallback(() => {
-    window.print();
   }, []);
 
   const getSectionContent = useCallback((sectionName) => {
@@ -634,141 +579,8 @@ const CVSectionOrganizer2 = ({ onClose }) => {
     }
   }, [experiences, education, profile, skills, achievements, updateExperience, updateExperienceResponsibility, updateEducation, updateEducationDetail, updateSkill, updateAchievement, addExperience, addEducation, addSkill, addAchievement, removeExperience, removeEducation, removeSkill, removeAchievement, getSectionContent]);
 
-  const renderTemplate = () => {
-    const leftSections = getColumnSections('left');
-    const rightSections = getColumnSections('right');
-
-    return (
-      <div className="template-container">
-        <button
-          onClick={() => setShowTemplate(false)}
-          className="close-button no-print"
-        >
-          <X size={24} />
-        </button>
-
-        <div id="cv-template-to-print" ref={cvTemplateRef} className="cv-content">
-          <div className="cv-header">
-            <div className="profile-and-name">
-              <div className="image-container" onClick={() => document.getElementById('imageUpload')?.click()}>
-                {profileImage ? (
-                  <img
-                    src={profileImage}
-                    alt="Profile Photo"
-                    className="profile-image"
-                  />
-                ) : (
-                  <div className="image-placeholder">
-                    Click to add photo
-                  </div>
-                )}
-                <input
-                  id="imageUpload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </div>
-
-              <div className="name-and-contact">
-                <div className="name-container">
-                  <EditableInput
-                    value={name}
-                    onChange={setName}
-                    placeholder="Your Full Name"
-                    className="name-input"
-                  />
-                  <EditableInput
-                    value={title}
-                    onChange={setTitle}
-                    placeholder="Job Title"
-                    className="title-input"
-                  />
-                </div>
-                <div className="contact-info">
-                  <div className="contact-item">
-                    <Mail size={16} color="#4F46E5" />
-                    <EditableInput
-                      value={email}
-                      onChange={setEmail}
-                      placeholder="email@example.com"
-                      className="email-input"
-                    />
-                  </div>
-                  <div className="contact-item">
-                    <Phone size={16} color="#4F46E5" />
-                    <EditableInput
-                      value={phone}
-                      onChange={setPhone}
-                      placeholder="Phone"
-                      className="phone-input"
-                    />
-                  </div>
-                  <div className="contact-item">
-                    <MapPin size={16} color="#4F46E5" />
-                    <EditableInput
-                      value={city}
-                      onChange={setCity}
-                      placeholder="City"
-                      className="city-input"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="columns">
-            <div className="column">
-              {leftSections.map((section) => (
-                <div key={section.id} className="section">
-                  <h2 className="section-title">{section.fullName}</h2>
-                  <div className="section-content">
-                    {renderSection(section)}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="column">
-              {rightSections.map((section) => (
-                <div key={section.id} className="section">
-                  <h2 className="section-title">{section.fullName}</h2>
-                  <div className="section-content">
-                    {renderSection(section)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="action-buttons no-print">
-          <button
-            onClick={() => setShowTemplate(false)}
-            className="return-button"
-          >
-            ← Return to Organizer
-          </button>
-          <button
-            onClick={downloadCV}
-            className="download-button"
-          >
-            <Download size={16} />
-            Download PDF
-          </button>
-          <button
-            onClick={printCV}
-            className="print-button"
-          >
-            <Printer size={16} />
-            Print
-          </button>
-        </div>
-      </div>
-    );
-  };
+  const leftSections = getColumnSections('left');
+  const rightSections = getColumnSections('right');
 
   return (
     <>
@@ -817,20 +629,13 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           z-index: 1000;
         }
 
-        .organizer-container, .template-container {
+        .template-container {
           background-color: white;
           border-radius: 16px;
           padding: 32px;
           max-width: 90vw;
           position: relative;
           box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        .organizer-container {
-          width: 520px;
-        }
-
-        .template-container {
           width: 900px;
           max-height: 90vh;
           overflow: auto;
@@ -851,49 +656,6 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           color: var(--text-color);
         }
 
-        .organizer-title {
-          font-size: 24px;
-          font-weight: 600;
-          color: var(--text-color);
-          text-align: center;
-          margin: 0 0 32px 0;
-          line-height: 1.3;
-        }
-
-        .page-indicator {
-          text-align: center;
-          color: var(--dark-gray);
-          font-size: 14px;
-          margin-bottom: 24px;
-        }
-
-        .content-area {
-          background-color: var(--light-gray);
-          border-radius: 8px;
-          padding: 20px;
-          min-height: 400px;
-        }
-
-        .header-section {
-          background-color: #C7D2FE;
-          border-radius: 6px;
-          padding: 12px;
-          margin-bottom: 16px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: var(--primary-color);
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-        .header-icon {
-          width: 16px;
-          height: 16px;
-          background-color: var(--primary-color);
-          border-radius: 2px;
-        }
-
         .columns {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -904,34 +666,14 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           border-radius: 6px;
           padding: 4px;
         }
-        .column.drag-over {
-          background-color: #EEF2FF;
-        }
 
-        .section-item {
-          background-color: #E0E7FF;
-          border-radius: 6px;
-          padding: 12px;
-          margin-bottom: 8px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          cursor: grab;
-          color: var(--primary-color);
-          font-size: 14px;
-          font-weight: 500;
-        }
-        .section-item.opacity-50 {
-          opacity: 0.5;
-        }
-
-        .continue-button-container {
+        .next-button-container {
           display: flex;
           justify-content: center;
           margin-top: 24px;
         }
 
-        .continue-button {
+        .next-button {
           background-color: var(--secondary-color);
           color: white;
           border: none;
@@ -945,7 +687,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           transform: translateY(0);
           min-width: 200px;
         }
-        .continue-button:hover {
+        .next-button:hover {
           background-color: #059669;
           transform: translateY(-2px);
           box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
@@ -1071,40 +813,7 @@ const CVSectionOrganizer2 = ({ onClose }) => {
           justify-content: center;
           gap: 15px;
         }
-        .return-button, .download-button, .print-button {
-          border: none;
-          border-radius: 8px;
-          padding: 12px 24px;
-          font-size: 14px;
-          cursor: pointer;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: all 0.2s ease;
-        }
-        .return-button {
-          background-color: #6B7280;
-          color: white;
-        }
-        .return-button:hover {
-          background-color: #4B5563;
-        }
-        .download-button {
-          background-color: var(--secondary-color);
-          color: white;
-        }
-        .download-button:hover {
-          background-color: #059669;
-        }
-        .print-button {
-          background-color: var(--primary-color);
-          color: white;
-        }
-        .print-button:hover {
-          background-color: #4338CA;
-        }
-
+        
         .ai-help-section {
           margin-top: 15px;
           padding-top: 10px;
@@ -1314,81 +1023,116 @@ const CVSectionOrganizer2 = ({ onClose }) => {
         }
       `}</style>
       <div className="modal">
-        {showTemplate ? renderTemplate() : (
-          <div className="organizer-container">
-            <button onClick={onClose} className="close-button">
-              <X size={24} />
+        <div className="template-container">
+            <button onClick={onClose} className="close-button no-print">
+                <X size={24} />
             </button>
 
-            <h2 className="organizer-title">
-              Drag and drop to rearrange CV sections
-            </h2>
+            <div id="cv-template-to-print" ref={cvTemplateRef} className="cv-content">
+                <div className="cv-header">
+                    <div className="profile-and-name">
+                        <div className="image-container" onClick={() => document.getElementById('imageUpload')?.click()}>
+                            {profileImage ? (
+                            <img
+                                src={profileImage}
+                                alt="Profile Photo"
+                                className="profile-image"
+                            />
+                            ) : (
+                            <div className="image-placeholder">
+                                Click to add photo
+                            </div>
+                            )}
+                            <input
+                            id="imageUpload"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                            />
+                        </div>
 
-            <div className="page-indicator">Page 1 of 1</div>
-
-            <div className="content-area">
-              <div className="header-section">
-                <div className="header-icon"></div>
-                Header
-              </div>
-
-              <div className="columns">
-                <div
-                  className={`column ${dragOverColumn === 'left' ? 'drag-over' : ''}`}
-                  onDragOver={(e) => handleDragOver(e, 'left')}
-                  onDrop={(e) => handleDrop(e, 'left')}
-                >
-                  {getColumnSections('left').map((section) => (
-                    <div
-                      key={section.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, section)}
-                      className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
-                      onDragEnd={() => setDraggedItem(null)}
-                      role="button"
-                      aria-grabbed={draggedItem?.id === section.id}
-                      aria-label={`Move section ${section.name}`}
-                    >
-                      <GripVertical size={16} color="#6B7280" />
-                      {section.name}
+                        <div className="name-and-contact">
+                            <div className="name-container">
+                                <EditableInput
+                                    value={name}
+                                    onChange={setName}
+                                    placeholder="Your Full Name"
+                                    className="name-input"
+                                />
+                                <EditableInput
+                                    value={title}
+                                    onChange={setTitle}
+                                    placeholder="Job Title"
+                                    className="title-input"
+                                />
+                            </div>
+                            <div className="contact-info">
+                                <div className="contact-item">
+                                    <Mail size={16} color="#4F46E5" />
+                                    <EditableInput
+                                    value={email}
+                                    onChange={setEmail}
+                                    placeholder="email@example.com"
+                                    className="email-input"
+                                    />
+                                </div>
+                                <div className="contact-item">
+                                    <Phone size={16} color="#4F46E5" />
+                                    <EditableInput
+                                    value={phone}
+                                    onChange={setPhone}
+                                    placeholder="Phone"
+                                    className="phone-input"
+                                    />
+                                </div>
+                                <div className="contact-item">
+                                    <MapPin size={16} color="#4F46E5" />
+                                    <EditableInput
+                                    value={city}
+                                    onChange={setCity}
+                                    placeholder="City"
+                                    className="city-input"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  ))}
                 </div>
 
-                <div
-                  className={`column ${dragOverColumn === 'right' ? 'drag-over' : ''}`}
-                  onDragOver={(e) => handleDragOver(e, 'right')}
-                  onDrop={(e) => handleDrop(e, 'right')}
-                >
-                  {getColumnSections('right').map((section) => (
-                    <div
-                      key={section.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, section)}
-                      className={`section-item ${draggedItem?.id === section.id ? 'opacity-50' : ''}`}
-                      onDragEnd={() => setDraggedItem(null)}
-                      role="button"
-                      aria-grabbed={draggedItem?.id === section.id}
-                      aria-label={`Move section ${section.name}`}
-                    >
-                      <GripVertical size={16} color="#6B7280" />
-                      {section.name}
+                <div className="columns">
+                    <div className="column">
+                        {leftSections.map((section) => (
+                            <div key={section.id} className="section">
+                            <h2 className="section-title">{section.fullName}</h2>
+                            <div className="section-content">
+                                {renderSection(section)}
+                            </div>
+                            </div>
+                        ))}
                     </div>
-                  ))}
+
+                    <div className="column">
+                        {rightSections.map((section) => (
+                            <div key={section.id} className="section">
+                            <h2 className="section-title">{section.fullName}</h2>
+                            <div className="section-content">
+                                {renderSection(section)}
+                            </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-              </div>
             </div>
 
-            <div className="continue-button-container">
-              <button
-                onClick={() => setShowTemplate(true)}
-                className="continue-button"
-              >
-                Continue to Edit
-              </button>
+            <div className="action-buttons no-print">
+                <div className="next-button-container">
+                    <button onClick={onClose} className="next-button">
+                        Next
+                    </button>
+                </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </>
   );

@@ -3,7 +3,7 @@ import React from 'react';
 const cvPricing = [
   {
     type: 'Standard CV',
-    price: 2500,
+    price: 1000,
     features: [
       'Professional template',
       'Download as PDF',
@@ -12,7 +12,7 @@ const cvPricing = [
   },
   {
     type: 'CV with AI Assistance',
-    price: 4000,
+    price: 1500,
     features: [
       'Professional template',
       'AI writing help',
@@ -21,7 +21,7 @@ const cvPricing = [
   },
   {
     type: 'CV + Expert Review',
-    price: 7000,
+    price: 2000,
     features: [
       'Professional template',
       'AI writing help',
